@@ -37,6 +37,9 @@ public class StopService {
 	final String FILEPATH = "src/main/resources/stopList.json";
 	final String DEPFILEPATH ="src/main/resources/stops_line.json";
 	
+	/**
+	 * Reads json objects to generate stops and get closest neighbours for each stop
+	 */
 	public void init(){
 		try {
 			Iterable<Stop> stops = getStopsFromJson();
@@ -60,14 +63,18 @@ public class StopService {
 		}
 	}
 	
-	
+	// returns closest stop from location
 	public Stop getClosestStop(Point p)
 	{
 		return stopRepository.findClosestStop(p).get(0);
 	}
 	
-	
-	public Iterable<Stop> getStopsFromJson() throws IOException
+	/**
+	 * 
+	 * @return stop list from json
+	 * @throws IOException
+	 */
+	private Iterable<Stop> getStopsFromJson() throws IOException
 	{
 		ArrayList<Stop> stops=new ArrayList<Stop>();
 		File jsonStops = new File(FILEPATH);
@@ -138,7 +145,10 @@ public class StopService {
 		
 		return stops;
 	}
-	
+	/**
+	 * 
+	 * @return list of all stops
+	 */
 	public List<Stop> getAllStops(){
 		return (List<Stop>) stopRepository.findAll();
 	}
@@ -271,7 +281,13 @@ public class StopService {
 		return stopsWithNeighBours;
 	}
 
-	
+	/**
+	 * 
+	 * @param line
+	 * @param s1
+	 * @param s2
+	 * @return distance between two stops using line
+	 */
 	private double getDistanceStop(LocationIndexedLine line, Stop s1, Stop s2)
 	{
 		

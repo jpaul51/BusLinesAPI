@@ -27,11 +27,15 @@ public class Stop {
 
  
 	Point point;
+	
+	
+	  
+	//We can access lines a stop belongs to 
 	@ManyToMany
 	@JsonIgnore
 	List<Line> lines;
 	
-	
+	//neighbours from lines the stop belongs to
 	@JsonIgnore
 	@OneToMany
 	List<StopNeighbour> neighbours;

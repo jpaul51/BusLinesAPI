@@ -42,7 +42,9 @@ public class LineService {
 @Autowired
 private LineRepository lineRepository;
 	
-	
+	/**
+	 * Reads json files to generate db
+	 */
 	public void init(){
 		try {
 			Iterable<Line> lines = getLinesFromJson();
@@ -54,9 +56,12 @@ private LineRepository lineRepository;
 		}
 	}
 	
+	/**
+	 * returns lines objects frm json
+	 */
 	final String RESSOURCES_PATH="src/main/resources/";
 	final String FILEPATH = "src/main/resources/lines.json";
-	public Iterable<Line> getLinesFromJson() throws IOException
+	private Iterable<Line> getLinesFromJson() throws IOException
 	{
 		List<Line> lines=null;
 		File file = new File(FILEPATH);
@@ -129,6 +134,7 @@ private LineRepository lineRepository;
 		//System.out.println("TEST: "+lines.get(0).getLines().toString());
 		return lines;
 	}
+	
 	
 	public List<Line> getAllLines(){
 		return (List<Line>) lineRepository.findAll();

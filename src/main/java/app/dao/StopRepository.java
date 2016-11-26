@@ -15,6 +15,8 @@ import app.model.Stop;
 public interface StopRepository extends CrudRepository<Stop, Long> {
 
 	Stop findByLabel(String label);
+	
+	
 	@Query(value ="SELECT s FROM Stop s ORDER BY distance(:point,s.point) "
 	 	)
 	List<Stop> findClosestStop(@Param("point") Point point);

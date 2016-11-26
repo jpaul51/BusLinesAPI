@@ -13,6 +13,10 @@ public class LinesAndStopsService {
 	@Autowired
 	StopService stopService;
 	
+	/**
+	 * 
+	 * @return all lines and stops
+	 */
 	public LinesAndStops getAllLinesAndStops(){
 		LinesAndStops linesAndStops = new LinesAndStops();
 		linesAndStops.setLines(lineService.getAllLines());

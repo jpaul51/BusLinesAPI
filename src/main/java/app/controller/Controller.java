@@ -19,10 +19,18 @@ import com.vividsolutions.jts.geom.Point;
 
 import app.model.LinesAndStops;
 import app.model.Stop;
-import app.service.ClosestStopService;
+
 import app.service.LineService;
 import app.service.LinesAndStopsService;
 import app.service.StopService;
+
+
+/**
+ * My controller links my httprequests with my services !
+ * @author Jonas
+ *
+ */
+
 
 @RestController
 @Configuration
@@ -34,8 +42,12 @@ public class Controller {
 @Autowired LineService lineService;	
 @Autowired StopService stopService;	
 @Autowired LinesAndStopsService linesAndStopsService;
-@Autowired ClosestStopService closestStopService;
 
+	/**
+	 * Loads DB from json files
+	 * Call this once to initialize the app
+	 * @return
+	 */
 	@RequestMapping(value="/init",method = RequestMethod.GET)
 	@ResponseBody
 	public String init(){
@@ -46,7 +58,10 @@ public class Controller {
 	
 	
 	
-	
+	/**
+	 * returns json with all lines and all stops
+	 * @return
+	 */
 	@RequestMapping(value="/getlinesandstops",method = RequestMethod.GET)
 	@ResponseBody
 	public LinesAndStops getLinesAndStops(){
@@ -54,6 +69,12 @@ public class Controller {
 		return linesAndStopsService.getAllLinesAndStops();
 	}
 	
+	/**
+	 * returns closest stop from user location
+	 * @param latitude double 
+	 * @param longitude double
+	 * @return Stop json object
+	 */
 	@RequestMapping(value="/getcloseststop",method = RequestMethod.GET)
 	@ResponseBody
 	public Stop getClosestStop(@RequestParam("latitude")double latitude,@RequestParam("longitude") double longitude){
@@ -62,7 +83,10 @@ public class Controller {
 		
 		return stopService.getClosestStop(factory.createPoint(new Coordinate(latitude,longitude)));
 	}
-	
+	/**
+	 * Custom Object mapper that parses jts geometry objects to geojson
+	 * @return
+	 */
 	@Bean
     public ObjectMapper objectMapper() {
 		ObjectMapper mapper = new ObjectMapper();

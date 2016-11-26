@@ -2,6 +2,11 @@ package app.model;
 
 import java.util.List;
 
+/**
+ * Exchange object used to generate lines and stops
+ * @author Jonas
+ *
+ */
 public class LinesAndStops {
 
 	
