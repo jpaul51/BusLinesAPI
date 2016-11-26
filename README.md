@@ -1,0 +1,5 @@
+# SpringBootStarterProject
+
+Services:
+/getlinesandstops
+/getcloseststops
