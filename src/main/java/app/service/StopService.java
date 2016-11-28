@@ -1,6 +1,8 @@
 package app.service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,13 +10,18 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.geotools.geometry.jts.JTSFactoryFinder;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.csvreader.CsvReader;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
@@ -25,6 +32,7 @@ import com.vividsolutions.jts.linearref.LocationIndexedLine;
 import app.dao.LineRepository;
 import app.dao.StopRepository;
 import app.model.Line;
+import app.model.Schedule;
 import app.model.Stop;
 import app.model.StopNeighbour;
 
@@ -36,7 +44,7 @@ public class StopService {
 	@Autowired LineRepository lineRepository;
 	final String FILEPATH = "src/main/resources/stopList.json";
 	final String DEPFILEPATH ="src/main/resources/stops_line.json";
-	
+	final String CSVFILEPATH="src/main/resources/";
 	/**
 	 * Reads json objects to generate stops and get closest neighbours for each stop
 	 */
@@ -44,15 +52,22 @@ public class StopService {
 		try {
 			Iterable<Stop> stops = getStopsFromJson();
 			stops =generatesClosestNeighboors((List<Stop>)stops);
+			//stops = generatesSchedules((List<Stop>) stops); //Needs debug
 			//System.out.println(stops.iterator().next().getNeighbours().get(0).getNeighbour().getLabel());
 			
-			for(Stop stop :stops)
+			/*for(Stop stop :stops)
 			{
 				
 				for (StopNeighbour neighbour : stop.getNeighbours())
 				{
 					System.out.println(stop.getLabel()+" : "+neighbour.toString());
 				}
+			}*/
+			for(Stop stop : stops)
+			{
+				
+					//System.out.println(stop.getLabel() + ": ");
+				
 			}
 			
 			stopRepository.deleteAll();
@@ -63,11 +78,77 @@ public class StopService {
 		}
 	}
 	
+	public Stop getStopBylabel(String label)
+	{
+		return stopRepository.findByLabel(label);
+	}
+	
+	
 	// returns closest stop from location
 	public Stop getClosestStop(Point p)
 	{
 		return stopRepository.findClosestStop(p).get(0);
 	}
+	
+	
+	
+	private Iterable<Stop> generatesSchedules(List<Stop> stopList)
+	{
+		
+		final int SCHEDULE_NUMBER=53;
+		String way=null;
+		DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
+		int count=0;
+		ArrayList<Stop> stopsWithSchedules = new ArrayList<>();
+		for(Stop eachStop : stopList)
+		{
+			ArrayList<Schedule> stopSchedules = new ArrayList<>();
+			for(int i=0; i<eachStop.getLines().size();i++)
+			{
+				way=null;
+				try{
+				  File file = new File(CSVFILEPATH+"L"+i+"-D1-PS.csv");//Add loop here to manage line direction
+			        try (FileReader reader = new FileReader(file)) {
+			        	System.out.println("File found");
+			            CsvReader schedules = new CsvReader(reader,';');
+			            schedules.readHeaders();
+			            Schedule schedule = new Schedule();
+			            ArrayList<DateTime> scheduleList = new ArrayList<>();
+			            
+			            while (schedules.readRecord()) {
+			            	if ( schedules.get("way") != null )
+			            		if(way==null)
+			            			way =  schedules.get("way");
+			            	System.out.println(schedules.get("ARRETS")+" == " + eachStop.getLabel());
+			            	if(schedules.get("Arrets") == eachStop.getLabel())
+			            	{						           							            
+				            	for(int scheduleIndex=1; scheduleIndex < SCHEDULE_NUMBER;scheduleIndex++){
+				            		
+				            		scheduleList.add(formatter.parseDateTime(schedules.get("B"+scheduleIndex)));
+				            	}
+			            	}
+			            
+			            }
+			            schedule.setSchedules(scheduleList);
+			            schedule.setSchoolPeriod(true);// TODO: detect schoolPeriod
+			            schedule.setLine(eachStop.getLines().get(i));
+			            schedule.setway(stopRepository.findByLabel(way));
+			            stopSchedules.add(schedule);
+			        }
+				}catch(FileNotFoundException e){
+					System.out.println("File not found");
+					
+				}catch(IOException e){}
+			
+		}
+			count++;
+			eachStop.setSchedules(stopSchedules);
+			stopsWithSchedules.add(eachStop);
+		}
+		System.out.println("COUNT: "+stopsWithSchedules.size());
+		return stopsWithSchedules;
+	}
+	
 	
 	/**
 	 * 
@@ -119,6 +200,9 @@ public class StopService {
 					    Coordinate coord = new Coordinate(latitude, longitude);
 					    Point point = geometryFactory.createPoint(coord);
 						Stop stop = new Stop(linesNodeId,stopNode.get("label").asText(),point,lines);
+						stop.setSchedules(null);
+						
+						
 						stops.add(stop);
 						//System.out.println("ADD");
 					}

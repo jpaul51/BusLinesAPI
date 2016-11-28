@@ -83,6 +83,19 @@ public class Controller {
 		
 		return stopService.getClosestStop(factory.createPoint(new Coordinate(latitude,longitude)));
 	}
+	
+	/**
+	 * find a stop by label
+	 * @param label
+	 * @return Stop json object
+	 */
+	@RequestMapping(value="/getstopbylabel",method = RequestMethod.GET)
+	@ResponseBody
+	public Stop getStopByLabel(@RequestParam("label")String label)
+	{
+		return stopService.getStopBylabel(label);
+	}
+	
 	/**
 	 * Custom Object mapper that parses jts geometry objects to geojson
 	 * @return

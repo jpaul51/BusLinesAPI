@@ -3,6 +3,7 @@ package app.model;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -40,6 +41,8 @@ public class Stop {
 	@OneToMany
 	List<StopNeighbour> neighbours;
 	
+	@OneToMany(cascade={CascadeType.REMOVE})
+	List<Schedule> schedules;
 	
 	public Stop()
 	{
@@ -56,6 +59,19 @@ public class Stop {
 
 	public void setNeighbours(List<StopNeighbour> neighbours) {
 		this.neighbours = neighbours;
+	}
+
+
+
+	public Stop(long id, String label, Point point, List<Line> lines, List<StopNeighbour> neighbours,
+			List<Schedule> schedules) {
+		super();
+		this.id = id;
+		this.label = label;
+		this.point = point;
+		this.lines = lines;
+		this.neighbours = neighbours;
+		this.schedules = schedules;
 	}
 
 
@@ -86,6 +102,18 @@ public class Stop {
 		this.id = id;
 		this.label = label;
 		this.point = point;
+	}
+
+
+
+	public List<Schedule> getSchedules() {
+		return schedules;
+	}
+
+
+
+	public void setSchedules(List<Schedule> schedules) {
+		this.schedules = schedules;
 	}
 
 
@@ -147,6 +175,7 @@ public class Stop {
 		result = prime * result + ((lines == null) ? 0 : lines.hashCode());
 		result = prime * result + ((neighbours == null) ? 0 : neighbours.hashCode());
 		result = prime * result + ((point == null) ? 0 : point.hashCode());
+		result = prime * result + ((schedules == null) ? 0 : schedules.hashCode());
 		return result;
 	}
 
@@ -178,14 +207,21 @@ public class Stop {
 				return false;
 		} else if (!neighbours.equals(other.neighbours))
 			return false;
-	
 		if (point == null) {
 			if (other.point != null)
 				return false;
 		} else if (!point.equals(other.point))
 			return false;
+		if (schedules == null) {
+			if (other.schedules != null)
+				return false;
+		} else if (!schedules.equals(other.schedules))
+			return false;
 		return true;
 	}
+
+
+
 
 
 

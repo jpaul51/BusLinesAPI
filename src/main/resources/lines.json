@@ -21,14 +21,14 @@
 		"kml_path": "path-3.kml"
 	}, {
 		"id": 4,
-		"label": "Ligne 4 : St Denis Coll\u00e8ge <> Clinique Convert\/EREA La Chagne",
+		"label": "Ligne 4 : St Denis Collège <> Clinique Convert\/EREA La Chagne",
 		"number": 4,
 		"color": "#90C34C",
 		"order": 4,
 		"kml_path": "path-4.kml"
 	}, {
 		"id": 5,
-		"label": "Ligne 5 : St Denis Coll\u00e8ge <> St Denis Coll\u00e8ge",
+		"label": "Ligne 5 : St Denis Collège <> St Denis Collège",
 		"number": 5,
 		"color": "#27BDEB",
 		"order": 5,
