@@ -1,0 +1,57 @@
+ [{
+		"id": 1,
+		"label": "Ligne 1 : Norelan <> Velaine",
+		"number": 1,
+		"color": "#006AA1",
+		"order": 1,
+		"kml_path": "path-1.kml"
+	}, {
+		"id": 2,
+		"label": "Ligne 2 : Norelan <> Ainterexpo",
+		"number": 2,
+		"color": "#E84539",
+		"order": 2,
+		"kml_path": "path-2.kml"
+	}, {
+		"id": 3,
+		"label": "Ligne 3 : P\u00e9ronnas Bl\u00e9s d'Or <> Alagnier",
+		"number": 3,
+		"color": "#F7E907",
+		"order": 3,
+		"kml_path": "path-3.kml"
+	}, {
+		"id": 4,
+		"label": "Ligne 4 : St Denis Collège <> Clinique Convert\/EREA La Chagne",
+		"number": 4,
+		"color": "#90C34C",
+		"order": 4,
+		"kml_path": "path-4.kml"
+	}, {
+		"id": 5,
+		"label": "Ligne 5 : St Denis Collège <> St Denis Collège",
+		"number": 5,
+		"color": "#27BDEB",
+		"order": 5,
+		"kml_path": "path-5.kml"
+	}, {
+		"id": 6,
+		"label": "Ligne 6 : Viriat Caronniers <> Ainterexpo",
+		"number": 6,
+		"color": "#B17BB1",
+		"order": 6,
+		"kml_path": "path-6.kml"
+	}, {
+		"id": 7,
+		"label": "Ligne 7 : Viriat Caronniers <> Carr\u00e9 Amiot",
+		"number": 7,
+		"color": "#F49429",
+		"order": 7,
+		"kml_path": "path-7.kml"
+	}, {
+		"id": 8,
+		"label": "Ligne 21 : Peloux Gare <> Sources",
+		"number": 21,
+		"color": "#91C87F",
+		"order": 8,
+		"kml_path": "path-8.kml"
+	}]

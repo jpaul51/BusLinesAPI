@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,7 +66,7 @@ private LineRepository lineRepository;
 	{
 		List<Line> lines=null;
 		File file = new File(FILEPATH);
-		BufferedReader reader = Files.newBufferedReader(file.toPath());
+		BufferedReader reader = Files.newBufferedReader(file.toPath(),Charset.defaultCharset());
 		
 	
 		ObjectMapper mapper = new ObjectMapper();

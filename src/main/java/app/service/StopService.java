@@ -43,7 +43,7 @@ public class StopService {
 	private StopRepository stopRepository;
 	@Autowired LineRepository lineRepository;
 	final String FILEPATH = "src/main/resources/stopList.json";
-	final String DEPFILEPATH ="src/main/resources/stops_line.json";
+	final String DEPFILEPATH ="src/main/resources/stopgroups.json";
 	final String CSVFILEPATH="src/main/resources/";
 	/**
 	 * Reads json objects to generate stops and get closest neighbours for each stop

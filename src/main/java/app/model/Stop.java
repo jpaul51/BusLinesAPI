@@ -1,6 +1,7 @@
 package app.model;
 
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -29,8 +30,12 @@ public class Stop {
  
 	Point point;
 	
-	
+	Boolean firstDirection;
+	Boolean secondDirection;
 	  
+	@JsonIgnore
+	HashMap<Long,Integer> orderInLine;
+	
 	//We can access lines a stop belongs to 
 	@ManyToMany
 	@JsonIgnore
@@ -59,6 +64,38 @@ public class Stop {
 
 	public void setNeighbours(List<StopNeighbour> neighbours) {
 		this.neighbours = neighbours;
+	}
+
+
+
+	public Stop(long id, String label, Point point, Boolean firstDirection, Boolean secondDirection, List<Line> lines,
+			List<StopNeighbour> neighbours, List<Schedule> schedules) {
+		super();
+		this.id = id;
+		this.label = label;
+		this.point = point;
+		this.firstDirection = firstDirection;
+		this.secondDirection = secondDirection;
+		this.lines = lines;
+		this.neighbours = neighbours;
+		this.schedules = schedules;
+	}
+
+
+
+	public Stop(long id, String label, Point point, Boolean firstDirection, Boolean secondDirection,
+			HashMap<Long, Integer> orderInLine, List<Line> lines, List<StopNeighbour> neighbours,
+			List<Schedule> schedules) {
+		super();
+		this.id = id;
+		this.label = label;
+		this.point = point;
+		this.firstDirection = firstDirection;
+		this.secondDirection = secondDirection;
+		this.orderInLine = orderInLine;
+		this.lines = lines;
+		this.neighbours = neighbours;
+		this.schedules = schedules;
 	}
 
 
@@ -106,6 +143,30 @@ public class Stop {
 
 
 
+	public Boolean getFirstDirection() {
+		return firstDirection;
+	}
+
+
+
+	public void setFirstDirection(Boolean firstDirection) {
+		this.firstDirection = firstDirection;
+	}
+
+
+
+	public Boolean getSecondDirection() {
+		return secondDirection;
+	}
+
+
+
+	public void setSecondDirection(Boolean secondDirection) {
+		this.secondDirection = secondDirection;
+	}
+
+
+
 	public List<Schedule> getSchedules() {
 		return schedules;
 	}
@@ -126,6 +187,18 @@ public class Stop {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+
+
+	public HashMap<Long, Integer> getOrderInLine() {
+		return orderInLine;
+	}
+
+
+
+	public void setOrderInLine(HashMap<Long, Integer> orderInLine) {
+		this.orderInLine = orderInLine;
 	}
 
 
@@ -170,12 +243,15 @@ public class Stop {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((firstDirection == null) ? 0 : firstDirection.hashCode());
 		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + ((label == null) ? 0 : label.hashCode());
 		result = prime * result + ((lines == null) ? 0 : lines.hashCode());
 		result = prime * result + ((neighbours == null) ? 0 : neighbours.hashCode());
+		result = prime * result + ((orderInLine == null) ? 0 : orderInLine.hashCode());
 		result = prime * result + ((point == null) ? 0 : point.hashCode());
 		result = prime * result + ((schedules == null) ? 0 : schedules.hashCode());
+		result = prime * result + ((secondDirection == null) ? 0 : secondDirection.hashCode());
 		return result;
 	}
 
@@ -190,6 +266,11 @@ public class Stop {
 		if (getClass() != obj.getClass())
 			return false;
 		Stop other = (Stop) obj;
+		if (firstDirection == null) {
+			if (other.firstDirection != null)
+				return false;
+		} else if (!firstDirection.equals(other.firstDirection))
+			return false;
 		if (id != other.id)
 			return false;
 		if (label == null) {
@@ -207,6 +288,11 @@ public class Stop {
 				return false;
 		} else if (!neighbours.equals(other.neighbours))
 			return false;
+		if (orderInLine == null) {
+			if (other.orderInLine != null)
+				return false;
+		} else if (!orderInLine.equals(other.orderInLine))
+			return false;
 		if (point == null) {
 			if (other.point != null)
 				return false;
@@ -217,9 +303,21 @@ public class Stop {
 				return false;
 		} else if (!schedules.equals(other.schedules))
 			return false;
+		if (secondDirection == null) {
+			if (other.secondDirection != null)
+				return false;
+		} else if (!secondDirection.equals(other.secondDirection))
+			return false;
 		return true;
 	}
 
+
+
+
+
+
+
+	
 
 
 
