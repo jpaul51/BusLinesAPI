@@ -51,7 +51,9 @@ public class Controller {
 	@RequestMapping(value="/init",method = RequestMethod.GET)
 	@ResponseBody
 	public String init(){
+		System.out.println("TEST");
 		lineService.init();
+		System.out.println("TEST2");
 		stopService.init();
 		return "oui";
 	}

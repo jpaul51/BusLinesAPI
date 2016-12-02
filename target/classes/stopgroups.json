@@ -1,5 +1,4 @@
-{
-	"stopgroups": [{
+ [{
 		"id": 1,
 		"way": "O",
 		"order": 1,
@@ -2628,4 +2627,3 @@
 		"stop_id": 9,
 		"line_id": 8
 	}]
-}

@@ -1,11 +1,13 @@
 package app.model;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
@@ -43,8 +45,8 @@ public class Stop {
 	
 	//neighbours from lines the stop belongs to
 	@JsonIgnore
-	@OneToMany
-	List<StopNeighbour> neighbours;
+	@ElementCollection(targetClass=Long.class)
+	List<Long> neighboursId;
 	
 	@OneToMany(cascade={CascadeType.REMOVE})
 	List<Schedule> schedules;
@@ -55,21 +57,8 @@ public class Stop {
 	}
 
 
-
-	public List<StopNeighbour> getNeighbours() {
-		return neighbours;
-	}
-
-
-
-	public void setNeighbours(List<StopNeighbour> neighbours) {
-		this.neighbours = neighbours;
-	}
-
-
-
 	public Stop(long id, String label, Point point, Boolean firstDirection, Boolean secondDirection, List<Line> lines,
-			List<StopNeighbour> neighbours, List<Schedule> schedules) {
+			List<Long> neighbours, List<Schedule> schedules) {
 		super();
 		this.id = id;
 		this.label = label;
@@ -77,14 +66,14 @@ public class Stop {
 		this.firstDirection = firstDirection;
 		this.secondDirection = secondDirection;
 		this.lines = lines;
-		this.neighbours = neighbours;
+		this.neighboursId = neighbours;
 		this.schedules = schedules;
 	}
 
 
 
 	public Stop(long id, String label, Point point, Boolean firstDirection, Boolean secondDirection,
-			HashMap<Long, Integer> orderInLine, List<Line> lines, List<StopNeighbour> neighbours,
+			HashMap<Long, Integer> orderInLine, List<Line> lines, List<Long> neighbours,
 			List<Schedule> schedules) {
 		super();
 		this.id = id;
@@ -94,32 +83,32 @@ public class Stop {
 		this.secondDirection = secondDirection;
 		this.orderInLine = orderInLine;
 		this.lines = lines;
-		this.neighbours = neighbours;
+		this.neighboursId = neighbours;
 		this.schedules = schedules;
 	}
 
 
 
-	public Stop(long id, String label, Point point, List<Line> lines, List<StopNeighbour> neighbours,
+	public Stop(long id, String label, Point point, List<Line> lines, List<Long> neighbours,
 			List<Schedule> schedules) {
 		super();
 		this.id = id;
 		this.label = label;
 		this.point = point;
 		this.lines = lines;
-		this.neighbours = neighbours;
+		this.neighboursId = neighbours;
 		this.schedules = schedules;
 	}
 
 
 
-	public Stop(long id, String label, Point point, List<Line> lines, List<StopNeighbour> neighbours) {
+	public Stop(long id, String label, Point point, List<Line> lines, List<Long> neighbours) {
 		super();
 		this.id = id;
 		this.label = label;
 		this.point = point;
 		this.lines = lines;
-		this.neighbours = neighbours;
+		this.neighboursId = neighbours;
 	}
 
 
@@ -238,6 +227,15 @@ public class Stop {
 	}
 
 
+	public List<Long> getNeighboursId() {
+		return neighboursId;
+	}
+
+
+	public void setNeighboursId(List<Long> neighboursId) {
+		this.neighboursId = neighboursId;
+	}
+
 
 	@Override
 	public int hashCode() {
@@ -247,14 +245,13 @@ public class Stop {
 		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + ((label == null) ? 0 : label.hashCode());
 		result = prime * result + ((lines == null) ? 0 : lines.hashCode());
-		result = prime * result + ((neighbours == null) ? 0 : neighbours.hashCode());
+		result = prime * result + ((neighboursId == null) ? 0 : neighboursId.hashCode());
 		result = prime * result + ((orderInLine == null) ? 0 : orderInLine.hashCode());
 		result = prime * result + ((point == null) ? 0 : point.hashCode());
 		result = prime * result + ((schedules == null) ? 0 : schedules.hashCode());
 		result = prime * result + ((secondDirection == null) ? 0 : secondDirection.hashCode());
 		return result;
 	}
-
 
 
 	@Override
@@ -283,10 +280,10 @@ public class Stop {
 				return false;
 		} else if (!lines.equals(other.lines))
 			return false;
-		if (neighbours == null) {
-			if (other.neighbours != null)
+		if (neighboursId == null) {
+			if (other.neighboursId != null)
 				return false;
-		} else if (!neighbours.equals(other.neighbours))
+		} else if (!neighboursId.equals(other.neighboursId))
 			return false;
 		if (orderInLine == null) {
 			if (other.orderInLine != null)
@@ -310,6 +307,8 @@ public class Stop {
 			return false;
 		return true;
 	}
+
+
 
 
 

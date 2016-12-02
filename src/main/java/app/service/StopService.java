@@ -34,7 +34,7 @@ import app.dao.StopRepository;
 import app.model.Line;
 import app.model.Schedule;
 import app.model.Stop;
-import app.model.StopNeighbour;
+
 
 @Service
 public class StopService {
@@ -45,30 +45,31 @@ public class StopService {
 	final String FILEPATH = "src/main/resources/stopList.json";
 	final String DEPFILEPATH ="src/main/resources/stopgroups.json";
 	final String CSVFILEPATH="src/main/resources/";
+	
+	final char firstDirection='I';
+	final char secondDirection='O';
+	
 	/**
 	 * Reads json objects to generate stops and get closest neighbours for each stop
 	 */
 	public void init(){
 		try {
 			Iterable<Stop> stops = getStopsFromJson();
-			stops =generatesClosestNeighboors((List<Stop>)stops);
+			//stops =generatesClosestNeighboors((List<Stop>)stops);
 			//stops = generatesSchedules((List<Stop>) stops); //Needs debug
 			//System.out.println(stops.iterator().next().getNeighbours().get(0).getNeighbour().getLabel());
 			
-			/*for(Stop stop :stops)
+			for(Stop stop :stops)
 			{
 				
-				for (StopNeighbour neighbour : stop.getNeighbours())
-				{
-					System.out.println(stop.getLabel()+" : "+neighbour.toString());
-				}
-			}*/
-			for(Stop stop : stops)
-			{
 				
-					//System.out.println(stop.getLabel() + ": ");
+				
+					//System.out.println(stop.getLabel()+" : "+ stop.getId() +"firstNeighbour: "+ stop.getNeighboursId().get(0));
 				
 			}
+
+
+			
 			
 			stopRepository.deleteAll();
 			stopRepository.save(stops);
@@ -175,39 +176,108 @@ public class StopService {
 		if ( stopRootNode.isArray() && stopLinesRootNode.isArray()){
 			Iterator<JsonNode> stopNodeIterator = stopRootNode.iterator();
 			Iterator<JsonNode> stopLinesNodeIterator = stopLinesRootNode.iterator();
+			int stopIndex=0;
 			while ( stopNodeIterator.hasNext()){
 				JsonNode stopNode = stopNodeIterator.next();
 				long stopId = stopNode.get("id").asLong();
+				
 				stopLinesNodeIterator = stopLinesRootNode.iterator();
+				stops.add(new Stop());
+				
+				stops.get(stopIndex).setId(stopId);
+			
+				HashMap<Long,Integer> orderInLine = new HashMap<>(); 
+				ArrayList<Long> linesIdByStop = new ArrayList<>();
 				while ( stopLinesNodeIterator.hasNext()){
 					JsonNode stopLineNode = stopLinesNodeIterator.next();
-					long linesNodeId = stopLineNode.get("id").asLong();
+					long stopGroupId = stopLineNode.get("stop_id").asLong();
+					
 					//
-					if ( stopId == linesNodeId ){
+					if ( stopId == stopGroupId ){
 						//System.out.println("ID: "+stopId+","+linesNodeId);
-						JsonNode lineList = stopLineNode.get("lines").get("lines");
-						Iterator<JsonNode> lineNodeIterator = lineList.iterator();
-						ArrayList<Line> lines =new ArrayList();
-						while (lineNodeIterator.hasNext()){
-							JsonNode lineNode = lineNodeIterator.next();
-							long lineId = lineNode.get("id").asLong();
-							Line aLine =lineRepository.findOne(lineId);
-							lines.add(aLine);
+						long lineId  = stopLineNode.get("line_id").asLong();
+						char way = stopLineNode.get("way").asText().charAt(0);
+						int order = stopLineNode.get("order").asInt();
+						
+						if(way == firstDirection)
+						{
+							stops.get(stopIndex).setFirstDirection(true);
 						}
-						double latitude = stopNode.get("latitude").asDouble();
-						double longitude = stopNode.get("longitude").asDouble();
-						GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
-					    Coordinate coord = new Coordinate(latitude, longitude);
-					    Point point = geometryFactory.createPoint(coord);
-						Stop stop = new Stop(linesNodeId,stopNode.get("label").asText(),point,lines);
-						stop.setSchedules(null);
+						else
+						{
+							stops.get(stopIndex).setSecondDirection(true);
+						}
+						
+						//stops.get(stopIndex).setId(stopGroupId);
+						
+						orderInLine.put(lineId, order);
+						
+						linesIdByStop.add(stopLineNode.get("line_id").asLong());
+					    
 						
 						
-						stops.add(stop);
+						
+						
+						
 						//System.out.println("ADD");
 					}
 				}
+				stops.get(stopIndex).setLabel(stopNode.get("label").asText());
+				stops.get(stopIndex).setOrderInLine(orderInLine);
+				
+				ArrayList<Line> linesByStop = new ArrayList<>();
+				Iterator<Long> lineIditerator = linesIdByStop.iterator();
+				while (lineIditerator.hasNext())
+				{
+					Long lineId = lineIditerator.next();
+					Line aLine =lineRepository.findOne(lineId);
+					linesByStop.add(aLine);
+				}
+				stops.get(stopIndex).setLines(linesByStop);
+				double latitude = stopNode.get("latitude").asDouble();
+				double longitude = stopNode.get("longitude").asDouble();
+				GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
+			    Coordinate coord = new Coordinate(latitude, longitude);
+			    Point point = geometryFactory.createPoint(coord);
+			    //System.out.println(stops.size());
+			  //  System.out.println(stops.get(stopIndex).getId());
+			    stops.get(stopIndex).setPoint(point);
+			    
+				stopIndex++;
 			}
+			
+			Iterator<Stop> stopIterator = stops.iterator();
+			//System.out.println(stopIterator.hasNext());
+			while(stopIterator.hasNext())
+			{
+				Stop currentStop = stopIterator.next();
+				Iterator<Line> lineIterator = currentStop.getLines().iterator();
+				ArrayList<Long> currentStopNeighbours = new ArrayList<>();
+				int lineCount=0;
+				while(lineIterator.hasNext())
+				{lineCount++;
+					Line currentLineForCurrentStop = lineIterator.next();
+					Iterator<Stop> otherStopIterator = stops.iterator();
+					while(otherStopIterator.hasNext())
+					{
+						Stop otherStop = otherStopIterator.next();
+						//Check if the stop ison the same line
+						if(otherStop.getLines().contains(currentLineForCurrentStop))
+						{
+							//Check if the stop is a neighbour
+							if(otherStop.getOrderInLine().get(currentLineForCurrentStop.getId()) == currentStop.getOrderInLine().get(currentLineForCurrentStop.getId()+1) || otherStop.getOrderInLine().get(currentLineForCurrentStop.getId()) ==  currentStop.getOrderInLine().get(currentLineForCurrentStop.getId()+1) )
+							{
+									currentStopNeighbours.add(otherStop.getId());
+							}
+						}
+					}
+				}
+				
+				currentStop.setNeighboursId(currentStopNeighbours);
+				
+			}
+			
+			
 		}
 		else{
 			throw new RuntimeException("???"); 
@@ -226,7 +296,7 @@ public class StopService {
 			mapper.registerModule(module);
 		 List<Long> l= Arrays.asList(mapper.readValue(reader, Long[].class));
 		 */
-		
+		System.out.println("Liste: "+stops.size());
 		return stops;
 	}
 	/**
@@ -245,9 +315,11 @@ public class StopService {
 	 */
 	private List<Stop> generatesClosestNeighboors(List<Stop> stopList)
 	{
+		
 		/*
 		 * First we create a busline - stop index
 		 */
+		/*
 		List<Line> lineList = (List<Line>) lineRepository.findAll();
 		HashMap<Line,List<Stop>> stopByLine = new HashMap<>();
 		
@@ -273,6 +345,7 @@ public class StopService {
 				}
 			}
 		}
+		*/
 		/*
 		for(Line l : stopByLine.keySet()){
 			System.out.println("LINE: "+ l.getName());
@@ -281,7 +354,7 @@ public class StopService {
 				System.out.println(s.getLabel());
 			}
 		}*/
-		
+		/*
 		ArrayList<Stop> stopsWithNeighBours = new ArrayList<>();
 		
 		//Now we look over each stop to find it's closest neighbours
@@ -363,6 +436,8 @@ public class StopService {
 			stopsWithNeighBours.add(stop);
 		}
 		return stopsWithNeighBours;
+		*/
+		return null;
 	}
 
 	/**
