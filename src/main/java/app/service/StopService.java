@@ -56,7 +56,7 @@ public class StopService {
 		try {
 			Iterable<Stop> stops = getStopsFromJson();
 			//stops =generatesClosestNeighboors((List<Stop>)stops);
-			//stops = generatesSchedules((List<Stop>) stops); //Needs debug
+			stops = generatesSchedules((List<Stop>) stops); //Needs debug
 			//System.out.println(stops.iterator().next().getNeighbours().get(0).getNeighbour().getLabel());
 			
 			for(Stop stop :stops)
@@ -95,8 +95,28 @@ public class StopService {
 	
 	private Iterable<Stop> generatesSchedules(List<Stop> stopList)
 	{
+		System.out.println(CSVFILEPATH+"L1-D1-PS.csv");
+		  File file = new File(CSVFILEPATH+"L1-D1-PS.csv");
+		   try (FileReader reader = new FileReader(file)) {
+	        	System.out.println("File found");
+	            CsvReader schedules = new CsvReader(reader,';');
+	           
+	            schedules.readHeaders();
+	            while(schedules.readRecord())
+	            {
+	            	System.out.println(schedules.get(0));
+	            }
+	            System.out.println("Column Count: "+schedules.getColumnCount());
+	            System.out.println(schedules.get(0));
+		   } catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		final int SCHEDULE_NUMBER=53;
+		/*final int SCHEDULE_NUMBER=53;
 		String way=null;
 		DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
 		int count=0;
@@ -147,7 +167,9 @@ public class StopService {
 			stopsWithSchedules.add(eachStop);
 		}
 		System.out.println("COUNT: "+stopsWithSchedules.size());
-		return stopsWithSchedules;
+		
+		*/
+		return stopList;
 	}
 	
 	
