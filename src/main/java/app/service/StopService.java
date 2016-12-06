@@ -95,19 +95,51 @@ public class StopService {
 	
 	private Iterable<Stop> generatesSchedules(List<Stop> stopList)
 	{
-		System.out.println(CSVFILEPATH+"L1-D1-PS.csv");
+		
+		final String CSV_NULL_VALUE = "....";
+		
+		ArrayList<Stop> stopsWithSchedules = new ArrayList<>();
+		
+	//	System.out.println(CSVFILEPATH+"L1-D1-PS.csv");
 		  File file = new File(CSVFILEPATH+"L1-D1-PS.csv");
 		   try (FileReader reader = new FileReader(file)) {
 	        	System.out.println("File found");
 	            CsvReader schedules = new CsvReader(reader,';');
 	           
 	            schedules.readHeaders();
+	            
+	            String way="";
 	            while(schedules.readRecord())
 	            {
-	            	System.out.println(schedules.get(0));
+	            	//System.out.println(schedules.get(0).toString().trim()+": "+schedules.get(0).compareTo("norelan"));
+	            	//System.out.println(schedules.get(0).toString().trim().toLowerCase()+" == norelan");
+	            	if(schedules.get(0).toString().trim().toLowerCase().contentEquals("norelan"))
+	            	{
+	            		ArrayList<DateTime> stopSchedules = new ArrayList<>();
+	            		for(int i=1;i<schedules.getColumnCount();i++)
+	            		{
+	            			if(schedules.get(i).contentEquals(CSV_NULL_VALUE))
+	            			{
+	            				//TODO:put a null value
+	            			}
+	            			else
+	            			{
+	            				DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
+	            				
+	            				DateTime time = new DateTime();
+	            				time = formatter.parseDateTime(schedules.get(i));
+	            				stopSchedules.add(time);
+	            			}
+	            				
+	            		}
+	            		//	
+	            		//System.out.println(schedules.getColumnCount());
+	            	}
+	            	way = schedules.get(0).toString(); //keeps the last one
 	            }
-	            System.out.println("Column Count: "+schedules.getColumnCount());
-	            System.out.println(schedules.get(0));
+	            
+	           //System.out.println("Column Count: "+schedules.getColumnCount());
+	            //System.out.println(schedules.get(0));
 		   } catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
