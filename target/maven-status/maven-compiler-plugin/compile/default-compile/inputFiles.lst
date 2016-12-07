@@ -1,8 +1,8 @@
 /Users/iem/Documents/workspace/SpringBootStarterProject/src/main/java/app/model/Line.java
+/Users/iem/Documents/workspace/SpringBootStarterProject/src/main/java/app/dao/ScheduleRepository.java
 /Users/iem/Documents/workspace/SpringBootStarterProject/src/main/java/app/model/LinesAndStops.java
 /Users/iem/Documents/workspace/SpringBootStarterProject/src/main/java/app/service/LineService.java
 /Users/iem/Documents/workspace/SpringBootStarterProject/src/main/java/app/dao/LineRepository.java
-/Users/iem/Documents/workspace/SpringBootStarterProject/src/main/java/app/model/StopNeighbour.java
 /Users/iem/Documents/workspace/SpringBootStarterProject/src/main/java/app/service/LinesAndStopsService.java
 /Users/iem/Documents/workspace/SpringBootStarterProject/src/main/java/app/model/Schedule.java
 /Users/iem/Documents/workspace/SpringBootStarterProject/src/main/java/app/DemoApplication.java

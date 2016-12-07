@@ -30,6 +30,7 @@ import com.vividsolutions.jts.linearref.LinearLocation;
 import com.vividsolutions.jts.linearref.LocationIndexedLine;
 
 import app.dao.LineRepository;
+import app.dao.ScheduleRepository;
 import app.dao.StopRepository;
 import app.model.Line;
 import app.model.Schedule;
@@ -39,9 +40,9 @@ import app.model.Stop;
 @Service
 public class StopService {
 
-	@Autowired
-	private StopRepository stopRepository;
-	@Autowired LineRepository lineRepository;
+	@Autowired private StopRepository stopRepository;
+	@Autowired private LineRepository lineRepository;
+	@Autowired private ScheduleRepository scheduleRepository;
 	final String FILEPATH = "src/main/resources/stopList.json";
 	final String DEPFILEPATH ="src/main/resources/stopgroups.json";
 	final String CSVFILEPATH="src/main/resources/";
@@ -97,57 +98,112 @@ public class StopService {
 	{
 		
 		final String CSV_NULL_VALUE = "....";
-		
+		final String CSV_SECOND_NULL_VALUE = "|";
 		ArrayList<Stop> stopsWithSchedules = new ArrayList<>();
 		
 	//	System.out.println(CSVFILEPATH+"L1-D1-PS.csv");
-		  File file = new File(CSVFILEPATH+"L1-D1-PS.csv");
-		   try (FileReader reader = new FileReader(file)) {
-	        	System.out.println("File found");
-	            CsvReader schedules = new CsvReader(reader,';');
-	           
-	            schedules.readHeaders();
-	            
-	            String way="";
-	            while(schedules.readRecord())
-	            {
-	            	//System.out.println(schedules.get(0).toString().trim()+": "+schedules.get(0).compareTo("norelan"));
-	            	//System.out.println(schedules.get(0).toString().trim().toLowerCase()+" == norelan");
-	            	if(schedules.get(0).toString().trim().toLowerCase().contentEquals("norelan"))
-	            	{
-	            		ArrayList<DateTime> stopSchedules = new ArrayList<>();
-	            		for(int i=1;i<schedules.getColumnCount();i++)
-	            		{
-	            			if(schedules.get(i).contentEquals(CSV_NULL_VALUE))
-	            			{
-	            				//TODO:put a null value
-	            			}
-	            			else
-	            			{
-	            				DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
-	            				
-	            				DateTime time = new DateTime();
-	            				time = formatter.parseDateTime(schedules.get(i));
-	            				stopSchedules.add(time);
-	            			}
-	            				
-	            		}
-	            		//	
-	            		//System.out.println(schedules.getColumnCount());
-	            	}
-	            	way = schedules.get(0).toString(); //keeps the last one
-	            }
-	            
-	           //System.out.println("Column Count: "+schedules.getColumnCount());
-	            //System.out.println(schedules.get(0));
-		   } catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		ArrayList<String> periodList = new ArrayList<>();
+		periodList.add("PS");
+		periodList.add("VS");
 		
+		for(Stop eachStop : stopList)
+		
+		{
+			ArrayList<Schedule> stopSchedulesObjectlist = new ArrayList<>();
+			for(Line eachStopLine : eachStop.getLines())
+			{
+				for(int wayFile=1; wayFile<=2 ; wayFile++)
+				{
+					for(String period : periodList)
+					{
+					  File file = new File(CSVFILEPATH+"L"+eachStopLine.getId()+"-D"+wayFile+"-"+period+".csv");
+					   try (FileReader reader = new FileReader(file)) {
+				        	//System.out.println("File found");
+				            CsvReader schedules = new CsvReader(reader,';');
+				           
+				            schedules.readHeaders();
+				            
+				            Schedule oneSchedule;
+				            String way="";
+				            ArrayList<DateTime> stopSchedules = new ArrayList<>();
+				            ArrayList<String> constraintList = new ArrayList<>();
+				            while(schedules.readRecord())
+				            {
+				            	//System.out.println(schedules.get(0).toString().trim()+": "+schedules.get(0).compareTo("norelan"));
+				            	//System.out.println(schedules.get(0).toString().trim().toLowerCase()+" == norelan");
+				            	if(schedules.get(0).toString().trim().toLowerCase().contentEquals(eachStop.getLabel().toString().trim().toLowerCase()))
+				            	{
+				            		
+				            		for(int i=1;i<schedules.getColumnCount();i++)
+				            		{
+				            			DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
+			            				DateTime time = new DateTime();
+			            				
+				            			if(schedules.get(i).contentEquals(CSV_NULL_VALUE) || schedules.get(i).contentEquals(CSV_SECOND_NULL_VALUE))
+				            			{
+				            				time =null;
+				            			}
+				            			else
+				            			{
+				            				//System.out.println(eachStop.getLabel()+": "+ file.getName());
+				            				try{
+				            				time = formatter.parseDateTime(schedules.get(i));
+				            				stopSchedules.add(time);
+				            				}
+				            				catch(IllegalArgumentException invalidFormat){
+				            					
+				            				}
+				            			}
+				            				
+				            		}
+				            		//	
+				            		//System.out.println(schedules.getColumnCount());
+				            	}
+				            	
+				            	if(schedules.get(0).toString().trim().toLowerCase().contentEquals("constraints"))
+				            	{
+				            		
+				            		for(int i=1;i<schedules.getColumnCount();i++)
+				            		{
+				            			if(schedules.get(i).toString().length()>0)
+				            				constraintList.add(schedules.get(i));
+				            			else
+				            				constraintList.add("null");
+				            		}
+				            	}
+				            	way = schedules.get(0).toString(); //keeps the last one
+				            	
+				            }
+				            Boolean schoolPeriod= true;
+				            if(period == "VS")
+				            	schoolPeriod = false;
+				            
+				            oneSchedule = new Schedule(stopSchedules,constraintList,way,eachStopLine,schoolPeriod);
+				           
+				           scheduleRepository.save(oneSchedule);
+				            stopSchedulesObjectlist.add(oneSchedule);
+				            
+				            
+				           //System.out.println("Column Count: "+schedules.getColumnCount());
+				            //System.out.println(schedules.get(0));
+					   } catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						   
+						//e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				}
+			}
+			
+			Stop oneStopWithSchedules = eachStop;
+			oneStopWithSchedules.setSchedules(stopSchedulesObjectlist);
+			stopsWithSchedules.add(oneStopWithSchedules);
+			
+			
+	}
 		/*final int SCHEDULE_NUMBER=53;
 		String way=null;
 		DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
@@ -201,7 +257,7 @@ public class StopService {
 		System.out.println("COUNT: "+stopsWithSchedules.size());
 		
 		*/
-		return stopList;
+		return stopsWithSchedules;
 	}
 	
 	

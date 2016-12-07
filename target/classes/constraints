@@ -1,0 +1,7 @@
+D4 : doublage scolaire D4, course effectue_e en car;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+c : uniquement lundis, mardis, jeudis;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+d : uniquement mercredis ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ f : uniquement lundis, mardis, jeudis, vendredis;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+e : uniquement vendredis ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+g : uniquement Lundis;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+h : uniquement lundis, mardis, mercredis, jeudis, vendredis ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

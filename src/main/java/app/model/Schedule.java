@@ -2,10 +2,11 @@ package app.model;
 
 import java.util.List;
 
+import javax.persistence.Convert;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -19,10 +20,15 @@ public class Schedule {
 
 	@Id @GeneratedValue
 	long id;
-	@Type(type="org.joda.time.contrib.hibernate.PersistentDateTime")
+
+	@ElementCollection
+	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	List<DateTime> schedules;
-	@ManyToOne
-	Stop way;
+	
+	@ElementCollection
+	List<String> constraints;
+	
+	String way;
 	@ManyToOne
 	Line line;//Contains multiLineString, to remove 
 	Boolean schoolPeriod=true;
@@ -32,9 +38,25 @@ public class Schedule {
 		super();
 	}
 
+	public Schedule(List<DateTime> schedules, List<String> constraints, String way, Line line, Boolean schoolPeriod) {
+		super();
+		this.schedules = schedules;
+		this.constraints = constraints;
+		this.way = way;
+		this.line = line;
+		this.schoolPeriod = schoolPeriod;
+	}
+
+	public Schedule(List<DateTime> schedules, String way, Line line, Boolean schoolPeriod) {
+		super();
+		this.schedules = schedules;
+		this.way = way;
+		this.line = line;
+		this.schoolPeriod = schoolPeriod;
+	}
 
 
-	public Schedule(Stop way, Line line, Boolean schoolPeriod) {
+	public Schedule(String way, Line line, Boolean schoolPeriod) {
 		super();
 		this.way = way;
 		this.line = line;
@@ -43,7 +65,7 @@ public class Schedule {
 
 
 
-	public Schedule(long id, List<DateTime> schedules, Stop way, Line line, Boolean schoolPeriod) {
+	public Schedule(long id, List<DateTime> schedules, String way, Line line, Boolean schoolPeriod) {
 		super();
 		this.id = id;
 		this.schedules = schedules;
@@ -54,7 +76,7 @@ public class Schedule {
 
 
 
-	public Schedule(long id, List<DateTime> schedules, Stop way, Line line) {
+	public Schedule(long id, List<DateTime> schedules, String way, Line line) {
 		super();
 		this.id = id;
 		this.schedules = schedules;
@@ -63,6 +85,16 @@ public class Schedule {
 	}
 
 
+
+	public List<String> getConstraints() {
+		return constraints;
+	}
+
+	public void setConstraints(List<String> constraints) {
+		this.constraints = constraints;
+	}
+
+	
 
 	public Boolean getSchoolPeriod() {
 		return schoolPeriod;
@@ -100,16 +132,19 @@ public class Schedule {
 
 
 
-	public Stop getway() {
+	public String getway() {
 		return way;
 	}
 
 
 
-	public void setway(Stop way) {
+	public void setway(String way) {
 		this.way = way;
 	}
 
+
+
+	
 
 
 	public Line getLine() {
@@ -122,21 +157,18 @@ public class Schedule {
 		this.line = line;
 	}
 
-
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((way == null) ? 0 : way.hashCode());
+		result = prime * result + ((constraints == null) ? 0 : constraints.hashCode());
 		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + ((line == null) ? 0 : line.hashCode());
 		result = prime * result + ((schedules == null) ? 0 : schedules.hashCode());
 		result = prime * result + ((schoolPeriod == null) ? 0 : schoolPeriod.hashCode());
+		result = prime * result + ((way == null) ? 0 : way.hashCode());
 		return result;
 	}
-
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -147,10 +179,10 @@ public class Schedule {
 		if (getClass() != obj.getClass())
 			return false;
 		Schedule other = (Schedule) obj;
-		if (way == null) {
-			if (other.way != null)
+		if (constraints == null) {
+			if (other.constraints != null)
 				return false;
-		} else if (!way.equals(other.way))
+		} else if (!constraints.equals(other.constraints))
 			return false;
 		if (id != other.id)
 			return false;
@@ -169,8 +201,15 @@ public class Schedule {
 				return false;
 		} else if (!schoolPeriod.equals(other.schoolPeriod))
 			return false;
+		if (way == null) {
+			if (other.way != null)
+				return false;
+		} else if (!way.equals(other.way))
+			return false;
 		return true;
 	}
+
+
 
 
 	

@@ -1,6 +1,6 @@
 app/DemoApplication.class
 app/model/Line.class
-app/model/StopNeighbour.class
+app/dao/ScheduleRepository.class
 app/controller/Controller.class
 app/service/StopService.class
 app/dao/StopRepository.class

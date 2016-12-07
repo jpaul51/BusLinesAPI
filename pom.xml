@@ -22,8 +22,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<property type="org.jadira.usertype.dateandtime.joda.PersistentDateTime" name="dateTime"/>
+	 
 	</properties>
-
+	
 	<dependencies>
 	
 		<dependency>
@@ -48,7 +50,7 @@
 <dependency>
     <groupId>org.hibernate</groupId>
     <artifactId>hibernate-spatial</artifactId>
-    <version>5.2.4.Final</version>
+    <version>5.2.5.Final</version>
 </dependency>
 
 <dependency>
@@ -110,12 +112,22 @@
       <version>2.0</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/joda-time/joda-time-hibernate -->
+
+
+<dependency>
+   <groupId>org.jadira.usertype</groupId>
+   <artifactId>usertype.core</artifactId>
+   <version>5.0.0.GA</version>
+</dependency>  
+
+
+
+    <!-- https://mvnrepository.com/artifact/joda-time/joda-time-hibernate -->
 <dependency>
     <groupId>joda-time</groupId>
     <artifactId>joda-time-hibernate</artifactId>
     <version>1.4</version>
 </dependency>
-
     
 	</dependencies>
 
