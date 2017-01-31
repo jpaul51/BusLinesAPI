@@ -90,27 +90,45 @@ public class StopService {
 			e.printStackTrace();
 		}
 	}
-	 HashMap<Long,ArrayList<Stop>> stopRoads = new HashMap<>();
+	 HashMap<Double,ArrayList<Stop>> stopRoads = new HashMap<>();
+	
 	 
-	private void checkNeighbours(Stop currentStop, Stop destinationStop, int currentRoad)
-	{
-		int i =0;
-		for(long neighbourId : currentStop.getNeighboursId())
+	 //Method that finds all roads in one direction
+	 private void checkNeighbours(Stop currentStop, Stop destinationStop, double currentRoad,ArrayList<Stop> roadPrefix )
 		{
+		 	ArrayList<Stop> oneRoad=null;
+		 	if(stopRoads.get(currentRoad)==null)
+		 	{
+		 		oneRoad = new ArrayList<>();
+		 		if(roadPrefix!=null)
+		 			oneRoad.addAll(roadPrefix);
+		 	}
+		 	else
+		 	{
+		 		oneRoad = stopRoads.get(currentRoad);
+		 		
+		 	}
+		 	oneRoad.add(currentStop);
+			stopRoads.put(currentRoad,oneRoad);
 			
-			Stop oneNeighbour = stopRepository.findOne(neighbourId);
-			
-			System.out.println(oneNeighbour.getLabel() +" on road "+ currentRoad+i);
-			
-			if(!oneNeighbour.equals(destinationStop))
+			if(!currentStop.equals(destinationStop))
 			{
-			 checkNeighbours( oneNeighbour,  destinationStop,  currentRoad+i);
-			i++;
+				for(Long oneNeighbourId : currentStop.getNeighboursId())
+				{
+					Stop oneNeighbour = stopRepository.findOne(oneNeighbourId);
+					ArrayList<Stop> roadPrefix2 = new ArrayList<>();
+					if(roadPrefix!=null)
+						roadPrefix2.addAll(roadPrefix);
+					roadPrefix2.add(currentStop);
+					checkNeighbours( oneNeighbour,  destinationStop,  currentRoad, roadPrefix2 );
+					
+					currentRoad = Math.random();
+					
+				}
 			}
 			
-		
 		}
-	}
+	 
 	
 	
 	public void atWhatTimeDoIGetThere(String startStopLabel, String destinationStopLabel,DateTime now)
@@ -129,7 +147,7 @@ public class StopService {
 	
 		
 		System.out.println("CHECKNEIGHBOURS");						
-		checkNeighbours(startStop, destinationStop,0);
+		checkNeighbours(startStop, destinationStop,0,null);
 					
 					
 		
