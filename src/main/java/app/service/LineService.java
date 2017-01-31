@@ -35,6 +35,7 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
 
 import app.dao.LineRepository;
+import app.dao.StopRepository;
 import app.model.Line;
 
 @Service
@@ -42,6 +43,8 @@ public class LineService {
 
 @Autowired
 private LineRepository lineRepository;
+@Autowired
+private StopRepository stopRepository;
 	
 	/**
 	 * Reads json files to generate db
@@ -49,6 +52,7 @@ private LineRepository lineRepository;
 	public void init(){
 		try {
 			Iterable<Line> lines = getLinesFromJson();
+			stopRepository.deleteAll();
 			lineRepository.deleteAll();
 			lineRepository.save(lines);
 		} catch (IOException e) {

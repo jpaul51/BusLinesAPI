@@ -1,16 +1,21 @@
 package app.service;
 
+import static org.mockito.Matchers.anyBoolean;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.joda.time.DateTime;
+import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +55,7 @@ public class StopService {
 	final char firstDirection='I';
 	final char secondDirection='O';
 	
+	ArrayList<Stop> stops;
 	/**
 	 * Reads json objects to generate stops and get closest neighbours for each stop
 	 */
@@ -59,14 +65,19 @@ public class StopService {
 			//stops =generatesClosestNeighboors((List<Stop>)stops);
 			stops = generatesSchedules((List<Stop>) stops); //Needs debug
 			//System.out.println(stops.iterator().next().getNeighbours().get(0).getNeighbour().getLabel());
-			
+			System.out.println("END SCHEDULES");
+			this.stops=(ArrayList<Stop>) stops;
 			for(Stop stop :stops)
 			{
 				
-				
+				//System.out.println(stop.getId() +" : "+stop.getNeighboursId().isEmpty() );
 				
 					//System.out.println(stop.getLabel()+" : "+ stop.getId() +"firstNeighbour: "+ stop.getNeighboursId().get(0));
-				
+				if(stop.getLines().contains(new Line(2)))
+				{
+					System.out.println(stop.getLabel()+": "+stop.getSchedules());
+				System.out.println(stop.getSchedules().size() + " --- "+stop.getSchedules().get(0).getSchedules().size());
+				}
 			}
 
 
@@ -79,6 +90,67 @@ public class StopService {
 			e.printStackTrace();
 		}
 	}
+	 HashMap<Long,ArrayList<Stop>> stopRoads = new HashMap<>();
+	 
+	private void checkNeighbours(Stop currentStop, Stop destinationStop, int currentRoad)
+	{
+		int i =0;
+		for(long neighbourId : currentStop.getNeighboursId())
+		{
+			
+			Stop oneNeighbour = stopRepository.findOne(neighbourId);
+			
+			System.out.println(oneNeighbour.getLabel() +" on road "+ currentRoad+i);
+			
+			if(!oneNeighbour.equals(destinationStop))
+			{
+			 checkNeighbours( oneNeighbour,  destinationStop,  currentRoad+i);
+			i++;
+			}
+			
+		
+		}
+	}
+	
+	
+	public void atWhatTimeDoIGetThere(String startStopLabel, String destinationStopLabel,DateTime now)
+	{
+		
+		Stop startStop =stopRepository.findByLabel(startStopLabel);
+		Stop destinationStop = stopRepository.findByLabel(destinationStopLabel);
+		
+		
+		ArrayList<Schedule> incomingSchedules = new ArrayList<>();
+		
+		
+		
+		DateTime dt = new DateTime();
+		Minutes timeToGo = Minutes.minutes(0);
+	
+		
+		System.out.println("CHECKNEIGHBOURS");						
+		checkNeighbours(startStop, destinationStop,0);
+					
+					
+		
+		Iterator<ArrayList<Stop>> roadIterator = stopRoads.values().iterator();
+		int i=0;
+		while(roadIterator.hasNext())
+		{
+			ArrayList<Stop> oneRoad= roadIterator.next();
+			System.out.println("ROAD "+i);
+			for(Stop stop : oneRoad)
+			{
+				System.out.println(stop.getLabel());
+			}
+			System.out.println("");
+			i++;
+			
+		}
+		
+		
+	}
+	
 	
 	public Stop getStopBylabel(String label)
 	{
@@ -101,7 +173,7 @@ public class StopService {
 		final String CSV_SECOND_NULL_VALUE = "|";
 		ArrayList<Stop> stopsWithSchedules = new ArrayList<>();
 		
-	//	System.out.println(CSVFILEPATH+"L1-D1-PS.csv");
+		//System.out.println(CSVFILEPATH+"L1-D1-PS.csv");
 		ArrayList<String> periodList = new ArrayList<>();
 		periodList.add("PS");
 		periodList.add("VS");
@@ -109,13 +181,15 @@ public class StopService {
 		for(Stop eachStop : stopList)
 		
 		{
+			
 			ArrayList<Schedule> stopSchedulesObjectlist = new ArrayList<>();
 			for(Line eachStopLine : eachStop.getLines())
 			{
-				for(int wayFile=1; wayFile<=2 ; wayFile++)
+				for(int wayFile=2; wayFile<=2 ; wayFile++)
 				{
 					for(String period : periodList)
 					{
+						if(eachStopLine.getId() == 2 || eachStopLine.getId() == 3){
 					  File file = new File(CSVFILEPATH+"L"+eachStopLine.getId()+"-D"+wayFile+"-"+period+".csv");
 					   try (FileReader reader = new FileReader(file)) {
 				        	//System.out.println("File found");
@@ -131,7 +205,8 @@ public class StopService {
 				            {
 				            	//System.out.println(schedules.get(0).toString().trim()+": "+schedules.get(0).compareTo("norelan"));
 				            	//System.out.println(schedules.get(0).toString().trim().toLowerCase()+" == norelan");
-				            	if(schedules.get(0).toString().trim().toLowerCase().contentEquals(eachStop.getLabel().toString().trim().toLowerCase()))
+				            	//System.out.println(schedules.get(0).toString().trim().toLowerCase().replaceAll(" ", "") +" == "+(eachStop.getLabel().toString().trim().toLowerCase().replaceAll(" ","")));
+				            	if(schedules.get(0).toString().trim().toLowerCase().replaceAll(" ", "").contentEquals(eachStop.getLabel().toString().trim().toLowerCase().replaceAll(" ","")))
 				            	{
 				            		
 				            		for(int i=1;i<schedules.getColumnCount();i++)
@@ -159,7 +234,7 @@ public class StopService {
 				            		//	
 				            		//System.out.println(schedules.getColumnCount());
 				            	}
-				            	
+				            	/*
 				            	if(schedules.get(0).toString().trim().toLowerCase().contentEquals("constraints"))
 				            	{
 				            		
@@ -170,7 +245,7 @@ public class StopService {
 				            			else
 				            				constraintList.add("null");
 				            		}
-				            	}
+				            	}*/
 				            	way = schedules.get(0).toString(); //keeps the last one
 				            	
 				            }
@@ -184,8 +259,8 @@ public class StopService {
 				            stopSchedulesObjectlist.add(oneSchedule);
 				            
 				            
-				           //System.out.println("Column Count: "+schedules.getColumnCount());
-				            //System.out.println(schedules.get(0));
+				          // System.out.println("Column Count: "+schedules.getColumnCount());
+				           // System.out.println(schedules.get(0));
 					   } catch (FileNotFoundException e) {
 						// TODO Auto-generated catch block
 						   
@@ -194,6 +269,7 @@ public class StopService {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+				}
 				}
 				}
 			}
@@ -268,145 +344,112 @@ public class StopService {
 	 */
 	private Iterable<Stop> getStopsFromJson() throws IOException
 	{
-		ArrayList<Stop> stops=new ArrayList<Stop>();
+	
 		File jsonStops = new File(FILEPATH);
-	//	BufferedReader reader = Files.newBufferedReader(file.toPath());
-		
-		ObjectMapper mapper = new ObjectMapper();
-		
-		
-		JsonFactory jsonFactory = mapper.getFactory();
-		JsonParser stopParser = jsonFactory.createParser(jsonStops);
-		File jsonStopLines = new File(DEPFILEPATH);
-		JsonParser stopLinesParser = jsonFactory.createParser(jsonStopLines);
-		
-		JsonNode stopRootNode = stopParser.getCodec().readTree(stopParser);
-		JsonNode stopLinesRootNode = stopLinesParser.getCodec().readTree(stopLinesParser);
-		
-		if ( stopRootNode.isArray() && stopLinesRootNode.isArray()){
-			Iterator<JsonNode> stopNodeIterator = stopRootNode.iterator();
-			Iterator<JsonNode> stopLinesNodeIterator = stopLinesRootNode.iterator();
-			int stopIndex=0;
-			while ( stopNodeIterator.hasNext()){
-				JsonNode stopNode = stopNodeIterator.next();
-				long stopId = stopNode.get("id").asLong();
-				
-				stopLinesNodeIterator = stopLinesRootNode.iterator();
-				stops.add(new Stop());
-				
-				stops.get(stopIndex).setId(stopId);
+	
+		//	BufferedReader reader = Files.newBufferedReader(file.toPath());
 			
-				HashMap<Long,Integer> orderInLine = new HashMap<>(); 
-				ArrayList<Long> linesIdByStop = new ArrayList<>();
-				while ( stopLinesNodeIterator.hasNext()){
-					JsonNode stopLineNode = stopLinesNodeIterator.next();
-					long stopGroupId = stopLineNode.get("stop_id").asLong();
-					
-					//
-					if ( stopId == stopGroupId ){
-						//System.out.println("ID: "+stopId+","+linesNodeId);
-						long lineId  = stopLineNode.get("line_id").asLong();
-						char way = stopLineNode.get("way").asText().charAt(0);
-						int order = stopLineNode.get("order").asInt();
-						
-						if(way == firstDirection)
-						{
-							stops.get(stopIndex).setFirstDirection(true);
-						}
-						else
-						{
-							stops.get(stopIndex).setSecondDirection(true);
-						}
-						
-						//stops.get(stopIndex).setId(stopGroupId);
-						
-						orderInLine.put(lineId, order);
-						
-						linesIdByStop.add(stopLineNode.get("line_id").asLong());
-					    
-						
-						
-						
-						
-						
-						//System.out.println("ADD");
-					}
-				}
-				stops.get(stopIndex).setLabel(stopNode.get("label").asText());
-				stops.get(stopIndex).setOrderInLine(orderInLine);
-				
-				ArrayList<Line> linesByStop = new ArrayList<>();
-				Iterator<Long> lineIditerator = linesIdByStop.iterator();
-				while (lineIditerator.hasNext())
-				{
-					Long lineId = lineIditerator.next();
-					Line aLine =lineRepository.findOne(lineId);
-					linesByStop.add(aLine);
-				}
-				stops.get(stopIndex).setLines(linesByStop);
-				double latitude = stopNode.get("latitude").asDouble();
-				double longitude = stopNode.get("longitude").asDouble();
-				GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
-			    Coordinate coord = new Coordinate(latitude, longitude);
-			    Point point = geometryFactory.createPoint(coord);
-			    //System.out.println(stops.size());
-			  //  System.out.println(stops.get(stopIndex).getId());
-			    stops.get(stopIndex).setPoint(point);
-			    
-				stopIndex++;
-			}
+			ObjectMapper mapper = new ObjectMapper();
 			
-			Iterator<Stop> stopIterator = stops.iterator();
-			//System.out.println(stopIterator.hasNext());
-			while(stopIterator.hasNext())
+			
+			JsonFactory jsonFactory = mapper.getFactory();
+			JsonParser stopParser = jsonFactory.createParser(jsonStops);
+			File jsonStopLines = new File(DEPFILEPATH);
+			JsonParser stopLinesParser = jsonFactory.createParser(jsonStopLines);
+			
+			JsonNode stopRootNode = stopParser.getCodec().readTree(stopParser);
+			JsonNode stopLinesRootNode = stopLinesParser.getCodec().readTree(stopLinesParser);
+			
+			ArrayList<Stop> stops = new ArrayList<>();
+			
+			if ( stopRootNode.isArray() && stopLinesRootNode.isArray())
 			{
-				Stop currentStop = stopIterator.next();
-				Iterator<Line> lineIterator = currentStop.getLines().iterator();
-				ArrayList<Long> currentStopNeighbours = new ArrayList<>();
-				int lineCount=0;
-				while(lineIterator.hasNext())
-				{lineCount++;
-					Line currentLineForCurrentStop = lineIterator.next();
-					Iterator<Stop> otherStopIterator = stops.iterator();
-					while(otherStopIterator.hasNext())
+				Iterator<JsonNode> stopNodeIterator = stopRootNode.iterator();
+				
+				while(stopNodeIterator.hasNext())
+				{
+					JsonNode stopNode = stopNodeIterator.next();
+					long stopId = stopNode.get("id").asLong();
+					String stopLabel = stopNode.get("label").asText();
+					double latitude  = stopNode.get("latitude").asDouble();
+					double longitude = stopNode.get("longitude").asDouble();
+					GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
+					Coordinate coord = new Coordinate(latitude, longitude);
+					Point point = geometryFactory.createPoint(coord);
+					Stop currentStop = new Stop(stopId,stopLabel,point);
+					
+					HashMap<Long,Integer> orderInLine = new HashMap<>();
+					Iterator<JsonNode> stopLinesRootNodeIterator = stopLinesRootNode.iterator();
+					
+					while(stopLinesRootNodeIterator.hasNext())
 					{
-						Stop otherStop = otherStopIterator.next();
-						//Check if the stop ison the same line
-						if(otherStop.getLines().contains(currentLineForCurrentStop))
+						JsonNode stopLineNode = stopLinesRootNodeIterator.next();
+						String way = stopLineNode.get("way").asText();
+						int order = stopLineNode.get("order").asInt();
+						int stopLineId = stopLineNode.get("stop_id").asInt();
+						long lineId = stopLineNode.get("line_id").asLong();
+						
+						if(stopLineId == currentStop.getId())
 						{
-							//Check if the stop is a neighbour
-							if(otherStop.getOrderInLine().get(currentLineForCurrentStop.getId()) == currentStop.getOrderInLine().get(currentLineForCurrentStop.getId()+1) || otherStop.getOrderInLine().get(currentLineForCurrentStop.getId()) ==  currentStop.getOrderInLine().get(currentLineForCurrentStop.getId()+1) )
+							if(way.equals("I"))
 							{
-									currentStopNeighbours.add(otherStop.getId());
+								currentStop.setFirstDirection(way.equals("I"));
+								currentStop.setSecondDirection(way.equals("O"));
+								orderInLine.put(lineId, order);
 							}
 						}
 					}
+					currentStop.setOrderInLine(orderInLine);
+					ArrayList<Line> linesAStopBelongs = new ArrayList<>();
+					for( Entry<Long, Integer> orderInLineEntry : currentStop.getOrderInLine().entrySet())
+					{
+						
+						Long lineId = orderInLineEntry.getKey();
+						Line aLine =lineRepository.findOne(lineId);
+						linesAStopBelongs.add(aLine);						
+						
+					}
+					currentStop.setLines(linesAStopBelongs);
+					
+					stops.add(currentStop);
+					
+					
+				}
+				System.out.println("Stops with lines done");
+				
+				for(Stop oneStop : stops)
+				{
+					ArrayList<Long> oneStopNeighboursId = new ArrayList<>();
+					for(Stop aNeighbour : stops)
+					{
+						for(Entry<Long,Integer> orderByLineOneStop : oneStop.getOrderInLine().entrySet())
+						{
+							if(aNeighbour.getOrderInLine().containsKey(orderByLineOneStop.getKey()))
+							{
+								if(orderByLineOneStop != null)
+								{
+									if(aNeighbour.getOrderInLine() != null)
+									{
+										if(!aNeighbour.getOrderInLine().isEmpty())
+										{
+										
+											
+											if(orderByLineOneStop.getValue() == aNeighbour.getOrderInLine().get(orderByLineOneStop.getKey())+1  /*|| orderByLineOneStop.getValue() == aNeighbour.getOrderInLine().get(orderByLineOneStop.getKey())-1 */  )
+											{
+												oneStopNeighboursId.add(aNeighbour.getId());
+											}
+										}
+									}
+								}
+							
+							}
+						}
+					}
+					oneStop.setNeighboursId(oneStopNeighboursId);
 				}
 				
-				currentStop.setNeighboursId(currentStopNeighbours);
-				
 			}
-			
-			
-		}
-		else{
-			throw new RuntimeException("???"); 
-		}
-
-		//System.out.println("RESULT: "+ stops.size()+stops.get(0).getLabel()+stops.get(0).getLinesID().get(1));
-		//System.out.println("RESULT: "+ stops.size()+stops.get(1).getLabel()+stops.get(1).getLinesID().get(0));
-		/*
-		 stops =Arrays.asList( mapper.readValue(reader, Stop[].class));
-		
-		 file = new File(DEPFILEPATH);
-		 reader = Files.newBufferedReader(file.toPath());
-		 mapper = new ObjectMapper();
-		 module = new SimpleModule();
-		 module.addDeserializer(Long.class, new StopLineDeserializer());
-			mapper.registerModule(module);
-		 List<Long> l= Arrays.asList(mapper.readValue(reader, Long[].class));
-		 */
-		System.out.println("Liste: "+stops.size());
+			System.out.println(stops.isEmpty());
 		return stops;
 	}
 	/**

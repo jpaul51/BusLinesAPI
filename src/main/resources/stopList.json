@@ -5,12 +5,12 @@
 		"longitude": 5.218698
 	}, {
 		"id": 2,
-		"label": "Abbé Gringoz",
+		"label": "Abbe Gringoz",
 		"latitude": 46.20223054919,
 		"longitude": 5.2469158172607
 	}, {
 		"id": 3,
-		"label": "Aéroplanes",
+		"label": "aeroplanes",
 		"latitude": 46.190734534652,
 		"longitude": 5.2357578277588
 	}, {
@@ -24,6 +24,11 @@
 		"latitude": 46.215387117537,
 		"longitude": 5.2439975738525
 	}, {
+		"id": 6,
+		"label": "Hotel de ville",
+		"latitude": 46.204928,
+		"longitude": 5.225599
+	}, {
 		"id": 7,
 		"label": "Mas",
 		"latitude": 46.204458180779,
@@ -34,23 +39,13 @@
 		"latitude": 46.194951,
 		"longitude": 5.234349
 	}, {
-		"id": 9,
-		"label": "Avant RP Fleyriat",
-		"latitude": 46.228017,
-		"longitude": 5.203613
-	}, {
 		"id": 10,
 		"label": "M\u00e2con",
 		"latitude": 46.2102792982,
 		"longitude": 5.2192354202271
 	}, {
-		"id": 11,
-		"label": "Bastion",
-		"latitude": 46.206448121945,
-		"longitude": 5.2233982086182
-	}, {
 		"id": 12,
-		"label": "Baudières",
+		"label": "Baudieres",
 		"latitude": 46.204517583052,
 		"longitude": 5.2396202087402
 	}, {
@@ -70,7 +65,7 @@
 		"longitude": 5.230978
 	}, {
 		"id": 16,
-		"label": "Berthelot",
+		"label": "Marboz",
 		"latitude": 46.193645897515,
 		"longitude": 5.213828086853
 	}, {
@@ -95,7 +90,7 @@
 		"longitude": 5.2200078964233
 	}, {
 		"id": 21,
-		"label": "Bourg Lycées",
+		"label": "Bourg Lycees",
 		"latitude": 46.198279993725,
 		"longitude": 5.2257961034774
 	}, {
@@ -103,12 +98,7 @@
 		"label": "Bouvard",
 		"latitude": 46.191506952075,
 		"longitude": 5.2075624465942
-	}, {
-		"id": 23,
-		"label": "Bouvent Plage",
-		"latitude": 46.192219943138,
-		"longitude": 5.2564859390259
-	}, {
+	},  {
 		"id": 24,
 		"label": "Bouvreuils",
 		"latitude": 46.195903582947,
@@ -118,12 +108,7 @@
 		"label": "Buidon",
 		"latitude": 46.22779832633,
 		"longitude": 5.2277326583862
-	}, {
-		"id": 26,
-		"label": "C\u00e2bles de Lyon",
-		"latitude": 46.206863921442,
-		"longitude": 5.2116823196411
-	}, {
+	},{
 		"id": 27,
 		"label": "Cadalles",
 		"latitude": 46.213932031348,
@@ -140,7 +125,7 @@
 		"longitude": 5.2274751663208
 	}, {
 		"id": 30,
-		"label": "Carré Amiot (Quai 4 Sept)",
+		"label": "Carre Amiot (Quai 4 Sept)",
 		"latitude": 46.207505,
 		"longitude": 5.228209
 	}, {
@@ -150,14 +135,9 @@
 		"longitude": 5.2295351028442
 	}, {
 		"id": 32,
-		"label": "Cédraie",
+		"label": "Cedraie",
 		"latitude": 46.191001911142,
 		"longitude": 5.2390623092651
-	}, {
-		"id": 33,
-		"label": "Centre Commercial",
-		"latitude": 46.179384688819,
-		"longitude": 5.2030563354492
 	}, {
 		"id": 34,
 		"label": "Centre Nautique",
@@ -165,32 +145,27 @@
 		"longitude": 5.2380752563477
 	}, {
 		"id": 35,
-		"label": "Chalandré",
+		"label": "Chalandre",
 		"latitude": 46.207725210387,
 		"longitude": 5.1978635787964
 	}, {
 		"id": 36,
-		"label": "Chambière Hôtels",
+		"label": "Chambiere Hôtels",
 		"latitude": 46.221711840057,
 		"longitude": 5.2051591873169
 	}, {
 		"id": 37,
-		"label": "Chambière Nord",
+		"label": "Chambiere Nord",
 		"latitude": 46.223226102138,
 		"longitude": 5.2045154571533
-	}, {
-		"id": 38,
-		"label": "Champ de Foire",
-		"latitude": 46.207012420499,
-		"longitude": 5.2304363250732
-	}, {
+	},  {
 		"id": 39,
 		"label": "Champagne",
 		"latitude": 46.242788987019,
 		"longitude": 5.2229690551758
 	}, {
 		"id": 40,
-		"label": "Charité",
+		"label": "Charite",
 		"latitude": 46.207725210387,
 		"longitude": 5.220308303833
 	}, {
@@ -198,12 +173,7 @@
 		"label": "Jarrin",
 		"latitude": 46.207517314292,
 		"longitude": 5.2164459228516
-	}, {
-		"id": 42,
-		"label": "Charles Robin",
-		"latitude": 46.206151120377,
-		"longitude": 5.2319383621216
-	}, {
+	},  {
 		"id": 43,
 		"label": "Charmettes",
 		"latitude": 46.193645897515,
@@ -235,7 +205,7 @@
 		"longitude": 5.2343845367432
 	}, {
 		"id": 49,
-		"label": "Cimetière",
+		"label": "Cimetiere",
 		"latitude": 46.214347774193,
 		"longitude": 5.2348136901855
 	}, {
@@ -243,22 +213,12 @@
 		"label": "Citadelle",
 		"latitude": 46.203151314532,
 		"longitude": 5.2149868011475
-	}, {
-		"id": 51,
-		"label": "Cité des Seniors",
-		"latitude": 46.256410609369,
-		"longitude": 5.2161455154419
-	}, {
+	},  {
 		"id": 52,
 		"label": "Clinique Convert",
 		"latitude": 46.211407,
 		"longitude": 5.254146
-	}, {
-		"id": 53,
-		"label": "Cordier",
-		"latitude": 46.204131467132,
-		"longitude": 5.2374744415283
-	}, {
+	},  {
 		"id": 54,
 		"label": "Côtes",
 		"latitude": 46.190764243215,
@@ -268,12 +228,7 @@
 		"label": "CPA",
 		"latitude": 46.2281248992,
 		"longitude": 5.2304363250732
-	}, {
-		"id": 56,
-		"label": "Crépignat",
-		"latitude": 46.242318,
-		"longitude": 5.190293
-	}, {
+	},  {
 		"id": 57,
 		"label": "Croix Blanche",
 		"latitude": 46.203329525396,
@@ -294,18 +249,13 @@
 		"latitude": 46.219037,
 		"longitude": 5.22784
 	}, {
-		"id": 61,
-		"label": "D'Arsonval",
-		"latitude": 46.22147430496,
-		"longitude": 5.2200937271118
-	}, {
 		"id": 62,
-		"label": "Dépôt TUB",
+		"label": "Depôt TUB",
 		"latitude": 46.22355270221,
 		"longitude": 5.2218961715698
 	}, {
 		"id": 63,
-		"label": "Dévorah",
+		"label": "Devorah",
 		"latitude": 46.207940530513,
 		"longitude": 5.258175730705
 	}, {
@@ -320,14 +270,9 @@
 		"longitude": 5.214935
 	}, {
 		"id": 66,
-		"label": "Monastère de Brou",
+		"label": "Monastere de Brou",
 		"latitude": 46.197864129258,
 		"longitude": 5.2352857589722
-	}, {
-		"id": 67,
-		"label": "Emile Huchet",
-		"latitude": 46.195665936217,
-		"longitude": 5.2253723144531
 	}, {
 		"id": 68,
 		"label": "EREA La Chagne",
@@ -345,20 +290,10 @@
 		"longitude": 5.2288055419922
 	}, {
 		"id": 71,
-		"label": "Flèches",
+		"label": "Fleches",
 		"latitude": 46.199884012903,
 		"longitude": 5.1904392242432
-	}, {
-		"id": 72,
-		"label": "Fleyriat RN",
-		"latitude": 46.22183060722,
-		"longitude": 5.2092361450195
-	}, {
-		"id": 73,
-		"label": "Fleyriat Tennis",
-		"latitude": 46.233818,
-		"longitude": 5.205471
-	}, {
+	},  {
 		"id": 74,
 		"label": "Fontanettes",
 		"latitude": 46.202586976314,
@@ -380,7 +315,7 @@
 		"longitude": 5.266056060791
 	}, {
 		"id": 78,
-		"label": "Fruitière",
+		"label": "Fruitiere",
 		"latitude": 46.200686004932,
 		"longitude": 5.1981210708618
 	}, {
@@ -394,18 +329,13 @@
 		"latitude": 46.207903406414,
 		"longitude": 5.2244281768799
 	}, {
-		"id": 81,
-		"label": "Gare SNCF",
-		"latitude": 46.19982460562,
-		"longitude": 5.215630531311
-	}, {
 		"id": 82,
 		"label": "Gay-Lussac",
 		"latitude": 46.219254,
 		"longitude": 5.209567
 	}, {
 		"id": 83,
-		"label": "Gelière",
+		"label": "Geliere",
 		"latitude": 46.244925935798,
 		"longitude": 5.2189350128174
 	}, {
@@ -464,18 +394,13 @@
 		"latitude": 46.222602587516,
 		"longitude": 5.2094507217407
 	}, {
-		"id": 95,
-		"label": "Hortensias",
-		"latitude": 46.216307662357,
-		"longitude": 5.2100944519043
-	}, {
 		"id": 96,
 		"label": "Hôtel Dieu",
 		"latitude": 46.200715708115,
 		"longitude": 5.2329254150391
 	}, {
 		"id": 97,
-		"label": "Hôtel de Ville",
+		"label": "Hotel de Ville",
 		"latitude": 46.204903696258,
 		"longitude": 5.2264451980591
 	}, {
@@ -504,18 +429,13 @@
 		"latitude": 46.197834424533,
 		"longitude": 5.2257585525513
 	}, {
-		"id": 103,
-		"label": "Ferry",
-		"latitude": 46.19578475971,
-		"longitude": 5.2203941345215
-	}, {
 		"id": 104,
 		"label": "Jura",
 		"latitude": 46.205438310063,
 		"longitude": 5.2365303039551
 	}, {
 		"id": 105,
-		"label": "La Bruyère",
+		"label": "La Bruyere",
 		"latitude": 46.19019977777,
 		"longitude": 5.2262306213379
 	}, {
@@ -530,29 +450,14 @@
 		"longitude": 5.2284622192383
 	}, {
 		"id": 108,
-		"label": "Viriat Vernée",
+		"label": "Viriat Vernee",
 		"latitude": 46.240651955002,
 		"longitude": 5.2263593673706
-	}, {
-		"id": 109,
-		"label": "Laiterie",
-		"latitude": 46.214585340121,
-		"longitude": 5.2245998382568
-	}, {
-		"id": 110,
-		"label": "Lazaristes",
-		"latitude": 46.206062019594,
-		"longitude": 5.2067041397095
-	}, {
+	},  {
 		"id": 111,
 		"label": "Clos",
 		"latitude": 46.198844376183,
 		"longitude": 5.2105236053467
-	}, {
-		"id": 112,
-		"label": "Le Coteau",
-		"latitude": 46.214110207239,
-		"longitude": 5.2139568328857
 	}, {
 		"id": 113,
 		"label": "Plan",
@@ -560,7 +465,7 @@
 		"longitude": 5.2494049072266
 	}, {
 		"id": 114,
-		"label": "Leclanché",
+		"label": "Leclanche",
 		"latitude": 46.215921629311,
 		"longitude": 5.2067899703979
 	}, {
@@ -573,12 +478,7 @@
 		"label": "Liavoles",
 		"latitude": 46.225512261836,
 		"longitude": 5.2171754837036
-	}, {
-		"id": 117,
-		"label": "Libération",
-		"latitude": 46.19991371652,
-		"longitude": 5.218505859375
-	}, {
+	},  {
 		"id": 118,
 		"label": "Lilas",
 		"latitude": 46.204279973576,
@@ -590,15 +490,10 @@
 		"longitude": 5.2580738067627
 	}, {
 		"id": 120,
-		"label": "Lycée Agricole",
+		"label": "Lycee Agricole",
 		"latitude": 46.211615692167,
 		"longitude": 5.2569580078125
-	}, {
-		"id": 121,
-		"label": "Maginot",
-		"latitude": 46.208705281381,
-		"longitude": 5.2276468276978
-	}, {
+	},  {
 		"id": 122,
 		"label": "Mail",
 		"latitude": 46.202052334761,
@@ -619,23 +514,13 @@
 		"latitude": 46.214615035789,
 		"longitude": 5.2210378646851
 	}, {
-		"id": 126,
-		"label": "Marcelle Pardé",
-		"latitude": 46.201755309428,
-		"longitude": 5.2214670181274
-	}, {
-		"id": 127,
-		"label": "Médiathèque",
-		"latitude": 46.201814714623,
-		"longitude": 5.2418518066406
-	}, {
 		"id": 128,
 		"label": "Miche",
 		"latitude": 46.220910154988,
 		"longitude": 5.2274322509766
 	}, {
 		"id": 129,
-		"label": "Molière",
+		"label": "Moliere",
 		"latitude": 46.190110651117,
 		"longitude": 5.2330112457275
 	}, {
@@ -645,7 +530,7 @@
 		"longitude": 5.2100086212158
 	}, {
 		"id": 131,
-		"label": "Moulin de Rozières",
+		"label": "Moulin de Rozieres",
 		"latitude": 46.2116750867,
 		"longitude": 5.2275609970093
 	}, {
@@ -688,12 +573,7 @@
 		"label": "Pagneux",
 		"latitude": 46.190229486622,
 		"longitude": 5.2099227905273
-	}, {
-		"id": 140,
-		"label": "P\u00e2querettes",
-		"latitude": 46.217139108931,
-		"longitude": 5.226788520813
-	}, {
+	},  {
 		"id": 141,
 		"label": "Parc",
 		"latitude": 46.213486589093,
@@ -710,7 +590,7 @@
 		"longitude": 5.2041721343994
 	}, {
 		"id": 145,
-		"label": "Valéry",
+		"label": "Valery",
 		"latitude": 46.195220345828,
 		"longitude": 5.2290201187134
 	}, {
@@ -729,13 +609,8 @@
 		"latitude": 46.199943420121,
 		"longitude": 5.254340171814
 	}, {
-		"id": 149,
-		"label": "Péronas Blé d'Or",
-		"latitude": 46.175343340367,
-		"longitude": 5.2001810073853
-	}, {
 		"id": 150,
-		"label": "Péronnas Mairie",
+		"label": "Peronnas Mairie",
 		"latitude": 46.179718978239,
 		"longitude": 5.203179717063
 	}, {
@@ -764,11 +639,6 @@
 		"latitude": 46.201458282489,
 		"longitude": 5.249490737915
 	}, {
-		"id": 156,
-		"label": "Place Carriat",
-		"latitude": 46.206477822013,
-		"longitude": 5.2273035049438
-	}, {
 		"id": 157,
 		"label": "Platanes",
 		"latitude": 46.19328941239,
@@ -778,37 +648,22 @@
 		"label": "Plein Soleil",
 		"latitude": 46.195309464194,
 		"longitude": 5.2267026901245
-	}, {
-		"id": 159,
-		"label": "PN Chambière Sud",
-		"latitude": 46.211348415975,
-		"longitude": 5.2114677429199
-	}, {
+	},  {
 		"id": 160,
-		"label": "Pont des Chèvres",
+		"label": "Pont des Chevres",
 		"latitude": 46.212239331557,
 		"longitude": 5.2218103408813
 	}, {
 		"id": 161,
-		"label": "Pré Neuf",
+		"label": "Pre Neuf",
 		"latitude": 46.208497388995,
 		"longitude": 5.2404356002808
 	}, {
 		"id": 162,
-		"label": "Préfecture",
+		"label": "Prefecture",
 		"latitude": 46.202992,
 		"longitude": 5.222344
-	}, {
-		"id": 163,
-		"label": "Préfecture Ain",
-		"latitude": 46.20196322733,
-		"longitude": 5.2208662033081
-	}, {
-		"id": 164,
-		"label": "Prévert",
-		"latitude": 46.201755309428,
-		"longitude": 5.1947736740112
-	}, {
+	},{
 		"id": 165,
 		"label": "Printemps",
 		"latitude": 46.201161253944,
@@ -829,11 +684,6 @@
 		"latitude": 46.211229626139,
 		"longitude": 5.2438259124756
 	}, {
-		"id": 169,
-		"label": "Reyssouze",
-		"latitude": 46.215505898381,
-		"longitude": 5.2162742614746
-	}, {
 		"id": 170,
 		"label": "Schuman",
 		"latitude": 46.212714480625,
@@ -850,7 +700,7 @@
 		"longitude": 5.1918125152588
 	}, {
 		"id": 173,
-		"label": "Saint-Denis Collège",
+		"label": "Saint-Denis College",
 		"latitude": 46.203448332318,
 		"longitude": 5.1952028274536
 	}, {
@@ -859,21 +709,11 @@
 		"latitude": 46.201903822295,
 		"longitude": 5.1897954940796
 	}, {
-		"id": 175,
-		"label": "Saint-Nicolas",
-		"latitude": 46.204042363073,
-		"longitude": 5.2351999282837
-	}, {
 		"id": 176,
 		"label": "Saint-Roch",
 		"latitude": 46.193764725377,
 		"longitude": 5.2250719070435
-	}, {
-		"id": 177,
-		"label": "Sardières Clinique",
-		"latitude": 46.211407,
-		"longitude": 5.254146
-	}, {
+	},  {
 		"id": 178,
 		"label": "Schweitzer",
 		"latitude": 46.208586485829,
@@ -890,12 +730,12 @@
 		"longitude": 5.1980781555176
 	}, {
 		"id": 181,
-		"label": "Sémard Gare",
+		"label": "Semard Gare",
 		"latitude": 46.199532,
 		"longitude": 5.2156766
 	}, {
 		"id": 182,
-		"label": "Semard Jaurès",
+		"label": "Semard Jaures",
 		"latitude": 46.197002685706,
 		"longitude": 5.2164459228516
 	}, {
@@ -915,12 +755,12 @@
 		"longitude": 5.2324104309082
 	}, {
 		"id": 186,
-		"label": "Teyssonnière",
+		"label": "Teyssonniere",
 		"latitude": 46.196378873324,
 		"longitude": 5.210394859314
 	}, {
 		"id": 187,
-		"label": "Collège Riboud",
+		"label": "College Riboud",
 		"latitude": 46.193735018435,
 		"longitude": 5.2304792404175
 	}, {
@@ -933,11 +773,6 @@
 		"label": "Ferret",
 		"latitude": 46.196883864846,
 		"longitude": 5.2361869812012
-	}, {
-		"id": 190,
-		"label": "Tulipes",
-		"latitude": 46.204844294403,
-		"longitude": 5.211124420166
 	}, {
 		"id": 191,
 		"label": "Tyrandes",
@@ -958,11 +793,6 @@
 		"label": "Vennes",
 		"latitude": 46.188417217252,
 		"longitude": 5.2269172668457
-	}, {
-		"id": 195,
-		"label": "Vercherolles",
-		"latitude": 46.236476,
-		"longitude": 5.18608
 	}, {
 		"id": 196,
 		"label": "Verlaine",
@@ -994,16 +824,6 @@
 		"latitude": 46.253469,
 		"longitude": 5.216672
 	}, {
-		"id": 202,
-		"label": "Viriat Salle des f\u00eates",
-		"latitude": 46.254333456382,
-		"longitude": 5.2179908752441
-	}, {
-		"id": 203,
-		"label": "Viriat Village",
-		"latitude": 46.252968427294,
-		"longitude": 5.2164459228516
-	}, {
 		"id": 204,
 		"label": "Vivaldi",
 		"latitude": 46.198279993725,
@@ -1014,18 +834,8 @@
 		"latitude": 46.200656301732,
 		"longitude": 5.2205657958984
 	}, {
-		"id": 206,
-		"label": "ZA Les Bruyères",
-		"latitude": 46.17058843251,
-		"longitude": 5.1979923248291
-	}, {
-		"id": 207,
-		"label": "ZA Monternoz",
-		"latitude": 46.171569165907,
-		"longitude": 5.1970481872559
-	}, {
 		"id": 208,
-		"label": "Carré Amiot (Maginot)",
+		"label": "Carre Amiot (Maginot)",
 		"latitude": 46.207682,
 		"longitude": 5.227612
 	}, {
@@ -1035,7 +845,7 @@
 		"longitude": 5.245854
 	}, {
 		"id": 210,
-		"label": " Péronnas Blés d'Or",
+		"label": " Peronnas Bles d'Or",
 		"latitude": 46.182061,
 		"longitude": 5.20996
 	}]

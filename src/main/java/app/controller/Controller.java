@@ -1,5 +1,9 @@
 package app.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
@@ -15,11 +19,9 @@ import com.bedatadriven.jackson.datatype.jts.JtsModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
 
 import app.model.LinesAndStops;
 import app.model.Stop;
-
 import app.service.LineService;
 import app.service.LinesAndStopsService;
 import app.service.StopService;
@@ -51,6 +53,7 @@ public class Controller {
 	@RequestMapping(value="/init",method = RequestMethod.GET)
 	@ResponseBody
 	public String init(){
+		
 		System.out.println("TEST");
 		lineService.init();
 		System.out.println("TEST2");
@@ -59,6 +62,31 @@ public class Controller {
 	}
 	
 	
+	@RequestMapping(value="/getRoad",method = RequestMethod.GET)
+	@ResponseBody
+	public List<Stop> getRoad(@RequestParam("start")String startStop,@RequestParam("destination") String destinationStop)
+	{
+		System.out.println("GETROAD");
+		stopService.atWhatTimeDoIGetThere(startStop, destinationStop, DateTime.now());
+		
+		
+		return null;
+	}
+	
+	@RequestMapping(value="/test",method = RequestMethod.GET)
+	@ResponseBody
+	public List<Stop> test()
+	{
+		ArrayList<Stop> stopList = new ArrayList<>();
+		for(Stop s : stopService.getAllStops())
+		{
+			if(s.getNeighboursId().size()==0)
+			{
+				stopList.add(s);
+			}
+		}
+		return stopList;
+	}
 	
 	/**
 	 * returns json with all lines and all stops

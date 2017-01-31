@@ -30,6 +30,10 @@ public Line(){
 	lines=null;
 }
 
+public Line(long id)
+{
+	this.id=id;
+}
 public Line(Long id, String name, String color, String pathFile) {
 	super();
 	this.id = id;
@@ -100,32 +104,12 @@ public boolean equals(Object obj) {
 	if (getClass() != obj.getClass())
 		return false;
 	Line other = (Line) obj;
-	if (color == null) {
-		if (other.color != null)
-			return false;
-	} else if (!color.equals(other.color))
+	if(other.getId() == this.id)
+		return true;
+	else
 		return false;
-	if (id == null) {
-		if (other.id != null)
-			return false;
-	} else if (!id.equals(other.id))
-		return false;
-	if (lines == null) {
-		if (other.lines != null)
-			return false;
-	} else if (!lines.equals(other.lines))
-		return false;
-	if (name == null) {
-		if (other.name != null)
-			return false;
-	} else if (!name.equals(other.name))
-		return false;
-	if (pathFile == null) {
-		if (other.pathFile != null)
-			return false;
-	} else if (!pathFile.equals(other.pathFile))
-		return false;
-	return true;
+		
+	
 }
 
 

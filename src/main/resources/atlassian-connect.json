@@ -1,0 +1,42 @@
+{
+  "name": "Spring Boot Lightning Demo",
+  "description": "Doesn't do heaps",
+  "key": "com.atlassian.lightning",
+  "baseUrl": "http://localhost:8080",
+  "vendor": {
+    "name": "Atlassian",
+    "url": "http://www.atlassian.com"
+  },
+  "authentication": {
+    "type": "jwt"
+  },
+  "lifecycle": {
+    "installed": "/connect/lifecycle",
+    "uninstalled": "/connect/lifecycle",
+    "enabled": "/connect/lifecycle",
+    "disabled": "/connect/lifecycle"
+  },
+  "apiVersion": 1,
+  "scopes": [
+    "read"
+  ],
+  "modules": {
+    "webItems": [
+      {
+        "url": "/show?contentId={content.id}",
+        "location": "system.content.action",
+        "context": "addon",
+        "target": {
+          "type": "page"
+        },
+        "tooltip": {
+          "value": "Show as JSON"
+        },
+        "key": "lightning-to-json",
+        "name": {
+          "value": "Show as JSON"
+        }
+      }
+    ]
+  }
+}

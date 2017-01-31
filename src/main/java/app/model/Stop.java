@@ -44,7 +44,6 @@ public class Stop {
 	List<Line> lines;
 	
 	//neighbours from lines the stop belongs to
-	@JsonIgnore
 	@ElementCollection(targetClass=Long.class)
 	List<Long> neighboursId;
 	
@@ -57,6 +56,11 @@ public class Stop {
 	}
 
 
+	public Stop(long id)
+	{
+		this.id=id;
+	}
+	
 	public Stop(long id, String label, Point point, Boolean firstDirection, Boolean secondDirection, List<Line> lines,
 			List<Long> neighbours, List<Schedule> schedules) {
 		super();
@@ -263,49 +267,11 @@ public class Stop {
 		if (getClass() != obj.getClass())
 			return false;
 		Stop other = (Stop) obj;
-		if (firstDirection == null) {
-			if (other.firstDirection != null)
-				return false;
-		} else if (!firstDirection.equals(other.firstDirection))
+		if(this.getId()==other.getId())
+			return true;
+		else
 			return false;
-		if (id != other.id)
-			return false;
-		if (label == null) {
-			if (other.label != null)
-				return false;
-		} else if (!label.equals(other.label))
-			return false;
-		if (lines == null) {
-			if (other.lines != null)
-				return false;
-		} else if (!lines.equals(other.lines))
-			return false;
-		if (neighboursId == null) {
-			if (other.neighboursId != null)
-				return false;
-		} else if (!neighboursId.equals(other.neighboursId))
-			return false;
-		if (orderInLine == null) {
-			if (other.orderInLine != null)
-				return false;
-		} else if (!orderInLine.equals(other.orderInLine))
-			return false;
-		if (point == null) {
-			if (other.point != null)
-				return false;
-		} else if (!point.equals(other.point))
-			return false;
-		if (schedules == null) {
-			if (other.schedules != null)
-				return false;
-		} else if (!schedules.equals(other.schedules))
-			return false;
-		if (secondDirection == null) {
-			if (other.secondDirection != null)
-				return false;
-		} else if (!secondDirection.equals(other.secondDirection))
-			return false;
-		return true;
+		
 	}
 
 
