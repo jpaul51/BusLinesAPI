@@ -175,7 +175,21 @@ public class StopService {
 				
 				for(Stop eachStop : oneRoad)
 				{
-					//les lignes...
+					ArrayList<Schedule> oneStopSchedules = (ArrayList<Schedule>) eachStop.getSchedules();
+					for(Schedule oneStopSchedule : oneStopSchedules)
+					{
+						
+						int startTimeIndex = 0;
+						for(DateTime startTime : oneStopSchedule.getSchedules())
+						{
+							if(startTime.isBefore(now))
+								startTimeIndex++;							
+						}
+						
+						
+					}
+					
+						
 				}
 				
 				
