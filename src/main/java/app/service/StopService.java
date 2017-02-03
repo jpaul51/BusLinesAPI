@@ -232,11 +232,12 @@ public class StopService {
 	
 	private int getEarliestTimeIndex(Schedule oneSchedule,DateTime now, DateTime timeWeStartAt)
 	{
-		ArrayList<DateTime> times = (ArrayList<DateTime>) oneSchedule.getSchedules();
+		Iterator<DateTime> timeIterator = oneSchedule.getSchedules().iterator();
 		int earliestDateIndex=-1;
 		int currentIndex=0;
-		for(DateTime eachTime : times)
+		while(timeIterator.hasNext())
 		{
+			DateTime eachTime = timeIterator.next();
 			if(eachTime.isAfter(now))
 			{
 				if(eachTime.isAfter(timeWeStartAt) || eachTime.isEqual(timeWeStartAt) )
