@@ -66,10 +66,10 @@ public class Controller {
 	@ResponseBody
 	public List<Stop> getRoad(@RequestParam("start")String startStop,@RequestParam("destination") String destinationStop)
 	{
-		System.out.println("GETROAD");
-		stopService.atWhatTimeDoIGetThere(startStop, destinationStop, DateTime.now());
+		System.out.println("GETROADX");
+		long minutes = stopService.atWhatTimeDoIGetThere(startStop, destinationStop, DateTime.now());
 		
-		
+		System.out.println("DURATION: "+minutes);
 		return null;
 	}
 	

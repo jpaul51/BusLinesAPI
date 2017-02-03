@@ -1,6 +1,6 @@
 package app.service;
 
-import static org.mockito.Matchers.anyBoolean;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -131,19 +132,14 @@ public class StopService {
 	 
 	
 	
-	public void atWhatTimeDoIGetThere(String startStopLabel, String destinationStopLabel,DateTime now)
+	public Long atWhatTimeDoIGetThere(String startStopLabel, String destinationStopLabel,DateTime now)
 	{
-		
+		System.out.println("FIND STOPS");;
 		Stop startStop =stopRepository.findByLabel(startStopLabel);
 		Stop destinationStop = stopRepository.findByLabel(destinationStopLabel);
 		
 		
-		ArrayList<Schedule> incomingSchedules = new ArrayList<>();
 		
-		
-		
-		DateTime dt = new DateTime();
-		Minutes timeToGo = Minutes.minutes(0);
 	
 		
 		System.out.println("CHECKNEIGHBOURS");	
@@ -167,39 +163,94 @@ public class StopService {
 			
 		}
 		
-		
+		ArrayList<Long> eachRoadDuration = new ArrayList<>();
 		for(ArrayList<Stop> oneRoad : stopRoads.values())
 		{
+			//Some roads end without reaching the destination
 			if(oneRoad.contains(destinationStop))
 			{
-				
-				for(Stop eachStop : oneRoad)
+			
+				ArrayList<Duration> eachDuration = new ArrayList<>();
+				Stop firstStop = oneRoad.get(0);
+				HashMap<Long,Integer> earliestScheduleIndexForEachLine = new HashMap<>();
+				for(Schedule oneSchedule : firstStop.getSchedules())
 				{
-					ArrayList<Schedule> oneStopSchedules = (ArrayList<Schedule>) eachStop.getSchedules();
-					for(Schedule oneStopSchedule : oneStopSchedules)
+					
+					int earliestIndex = getEarliestTimeIndex(oneSchedule, now, now);
+					earliestScheduleIndexForEachLine.put(oneSchedule.getLine().getId(), earliestIndex);
+					//if the destination stop is on the line of the start stop it's easy
+					Duration tripDuration = new Duration(0,0);
+					
+					if(destinationStop.getLines().contains(oneSchedule.getLine()))
 					{
-						
-						int startTimeIndex = 0;
-						for(DateTime startTime : oneStopSchedule.getSchedules())
+						for(Stop eachStopOnRoad : oneRoad)
 						{
-							if(startTime.isBefore(now))
-								startTimeIndex++;							
+							for(Schedule eachSchedule : eachStopOnRoad.getSchedules())
+							{
+								if(eachSchedule.getLine().equals(oneSchedule.getLine()))
+								{
+									DateTime earliestTime = eachSchedule.getSchedules().get(earliestIndex);
+									
+									tripDuration.plus(earliestTime.getMillis());
+								}
+							}
 						}
-						
-						
+						eachDuration.add(tripDuration);
 					}
 					
-						
 				}
-				
-				
+			
+				long shortesDuration = getShortestDuration(eachDuration);
+				eachRoadDuration.add(shortesDuration);
 			}
+			
 			
 		}
 		
 		
+		return eachRoadDuration.get(0);
 		
 	}
+	
+	
+	private long getShortestDuration(ArrayList<Duration> eachDuration)
+	{
+		long shortestDuration=-1;
+		for(Duration oneDuration : eachDuration)
+		{
+			
+			long oneMinuteDuration =oneDuration.getStandardMinutes();
+			if(oneMinuteDuration < shortestDuration || shortestDuration == -1)
+			{
+				shortestDuration = oneMinuteDuration;
+			}
+		}
+		return shortestDuration;
+	}
+	
+	
+	
+	private int getEarliestTimeIndex(Schedule oneSchedule,DateTime now, DateTime timeWeStartAt)
+	{
+		ArrayList<DateTime> times = (ArrayList<DateTime>) oneSchedule.getSchedules();
+		int earliestDateIndex=-1;
+		int currentIndex=0;
+		for(DateTime eachTime : times)
+		{
+			if(eachTime.isAfter(now))
+			{
+				if(eachTime.isAfter(timeWeStartAt) || eachTime.isEqual(timeWeStartAt) )
+				{
+					earliestDateIndex = currentIndex;
+					break;
+				}
+			}
+			currentIndex++;
+		}
+		
+		return earliestDateIndex;
+	}
+	
 	
 	
 	public Stop getStopBylabel(String label)
