@@ -180,22 +180,26 @@ public class StopService {
 					earliestScheduleIndexForEachLine.put(oneSchedule.getLine().getId(), earliestIndex);
 					//if the destination stop is on the line of the start stop it's easy
 					Duration tripDuration = new Duration(0,0);
-					
-					if(destinationStop.getLines().contains(oneSchedule.getLine()))
+					System.out.println("EARLIEST INDEX: "+earliestIndex);
+					if(earliestIndex !=-1)
 					{
-						for(Stop eachStopOnRoad : oneRoad)
+						if(destinationStop.getLines().contains(oneSchedule.getLine()))
 						{
-							for(Schedule eachSchedule : eachStopOnRoad.getSchedules())
+							for(Stop eachStopOnRoad : oneRoad)
 							{
-								if(eachSchedule.getLine().equals(oneSchedule.getLine()))
+								for(Schedule eachSchedule : eachStopOnRoad.getSchedules())
 								{
-									DateTime earliestTime = eachSchedule.getSchedules().get(earliestIndex);
-									
-									tripDuration.plus(earliestTime.getMillis());
+									if(eachSchedule.getLine().equals(oneSchedule.getLine()))
+									{
+										DateTime earliestTime = eachSchedule.getSchedules().get(earliestIndex);
+										
+										tripDuration.plus(earliestTime.getMillis());
+									}
 								}
 							}
+							System.out.println("ADD DURATION");
+							eachDuration.add(tripDuration);
 						}
-						eachDuration.add(tripDuration);
 					}
 					
 				}
@@ -220,6 +224,7 @@ public class StopService {
 		{
 			
 			long oneMinuteDuration =oneDuration.getStandardMinutes();
+			System.out.println("ONE DURATION: "+oneMinuteDuration);
 			if(oneMinuteDuration < shortestDuration || shortestDuration == -1)
 			{
 				shortestDuration = oneMinuteDuration;
@@ -235,15 +240,20 @@ public class StopService {
 		Iterator<DateTime> timeIterator = oneSchedule.getSchedules().iterator();
 		int earliestDateIndex=-1;
 		int currentIndex=0;
-		while(timeIterator.hasNext())
+		boolean found=false;
+		
+		while(timeIterator.hasNext() && !found)
 		{
 			DateTime eachTime = timeIterator.next();
-			if(eachTime.isAfter(now))
+			System.out.println(eachTime +"   :    "+now);
+		//TODO
+			if(eachTime.getHourOfDay() > now.getHourOfDay()  )
 			{
 				if(eachTime.isAfter(timeWeStartAt) || eachTime.isEqual(timeWeStartAt) )
 				{
+				
 					earliestDateIndex = currentIndex;
-					break;
+					found=true;
 				}
 			}
 			currentIndex++;
