@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 @Table(name="stopschedule")
@@ -30,6 +32,7 @@ public class Schedule {
 	
 	String way;
 	@ManyToOne
+	@JsonIgnore
 	Line line;//Contains multiLineString, to remove 
 	Boolean schoolPeriod=true;
 	

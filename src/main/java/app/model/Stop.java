@@ -35,8 +35,8 @@ public class Stop {
 	Boolean firstDirection;
 	Boolean secondDirection;
 	  
-	@JsonIgnore
-	HashMap<Long,Integer> orderInLine;
+	//@JsonIgnore
+	HashMap<Long,HashMap<String,Integer>> orderInLineByWay;
 	
 	//We can access lines a stop belongs to 
 	@ManyToMany
@@ -77,7 +77,7 @@ public class Stop {
 
 
 	public Stop(long id, String label, Point point, Boolean firstDirection, Boolean secondDirection,
-			HashMap<Long, Integer> orderInLine, List<Line> lines, List<Long> neighbours,
+			HashMap<Long, HashMap<String,Integer>> orderInLineByWay, List<Line> lines, List<Long> neighbours,
 			List<Schedule> schedules) {
 		super();
 		this.id = id;
@@ -85,7 +85,7 @@ public class Stop {
 		this.point = point;
 		this.firstDirection = firstDirection;
 		this.secondDirection = secondDirection;
-		this.orderInLine = orderInLine;
+		this.orderInLineByWay = orderInLineByWay;
 		this.lines = lines;
 		this.neighboursId = neighbours;
 		this.schedules = schedules;
@@ -184,16 +184,19 @@ public class Stop {
 
 
 
-	public HashMap<Long, Integer> getOrderInLine() {
-		return orderInLine;
+
+
+
+
+
+	public HashMap<Long, HashMap<String, Integer>> getOrderInLineByWay() {
+		return orderInLineByWay;
 	}
 
 
-
-	public void setOrderInLine(HashMap<Long, Integer> orderInLine) {
-		this.orderInLine = orderInLine;
+	public void setOrderInLineByWay(HashMap<Long, HashMap<String, Integer>> orderInLineByWay) {
+		this.orderInLineByWay = orderInLineByWay;
 	}
-
 
 
 	public String getLabel() {
@@ -250,7 +253,7 @@ public class Stop {
 		result = prime * result + ((label == null) ? 0 : label.hashCode());
 		result = prime * result + ((lines == null) ? 0 : lines.hashCode());
 		result = prime * result + ((neighboursId == null) ? 0 : neighboursId.hashCode());
-		result = prime * result + ((orderInLine == null) ? 0 : orderInLine.hashCode());
+		result = prime * result + ((orderInLineByWay == null) ? 0 : orderInLineByWay.hashCode());
 		result = prime * result + ((point == null) ? 0 : point.hashCode());
 		result = prime * result + ((schedules == null) ? 0 : schedules.hashCode());
 		result = prime * result + ((secondDirection == null) ? 0 : secondDirection.hashCode());

@@ -70,7 +70,7 @@
 		"longitude": 5.213828086853
 	}, {
 		"id": 17,
-		"label": "Bichat Hôtel de Ville",
+		"label": "Bichat Hotel de Ville",
 		"latitude": 46.206062019594,
 		"longitude": 5.2246427536011
 	}, {
@@ -150,7 +150,7 @@
 		"longitude": 5.1978635787964
 	}, {
 		"id": 36,
-		"label": "Chambiere Hôtels",
+		"label": "Chambiere Hotels",
 		"latitude": 46.221711840057,
 		"longitude": 5.2051591873169
 	}, {
@@ -220,7 +220,7 @@
 		"longitude": 5.254146
 	},  {
 		"id": 54,
-		"label": "Côtes",
+		"label": "Cotes",
 		"latitude": 46.190764243215,
 		"longitude": 5.2068328857422
 	}, {
@@ -250,7 +250,7 @@
 		"longitude": 5.22784
 	}, {
 		"id": 62,
-		"label": "Depôt TUB",
+		"label": "Depot TUB",
 		"latitude": 46.22355270221,
 		"longitude": 5.2218961715698
 	}, {
@@ -260,7 +260,7 @@
 		"longitude": 5.258175730705
 	}, {
 		"id": 64,
-		"label": "D\u00eemes",
+		"label": "Dimes",
 		"latitude": 46.207517314292,
 		"longitude": 5.243353843689
 	}, {
@@ -385,17 +385,17 @@
 		"longitude": 5.2341270446777
 	}, {
 		"id": 93,
-		"label": "Henri Dunant",
+		"label": "Dunant",
 		"latitude": 46.211882967059,
 		"longitude": 5.2301359176636
 	}, {
 		"id": 94,
-		"label": "Hôpital Fleyriat",
+		"label": "Hopital Fleyriat",
 		"latitude": 46.222602587516,
 		"longitude": 5.2094507217407
 	}, {
 		"id": 96,
-		"label": "Hôtel Dieu",
+		"label": "Hotel Dieu",
 		"latitude": 46.200715708115,
 		"longitude": 5.2329254150391
 	}, {
@@ -428,7 +428,15 @@
 		"label": "Jean-Marie Verne",
 		"latitude": 46.197834424533,
 		"longitude": 5.2257585525513
-	}, {
+	}, 
+	{
+	"id": 103,
+	"label": "Ferry",
+	"longitude": 46.195811,
+	"latitude": 5.220179
+	},
+	
+	{
 		"id": 104,
 		"label": "Jura",
 		"latitude": 46.205438310063,

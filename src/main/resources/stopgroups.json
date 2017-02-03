@@ -684,361 +684,361 @@
 		"line_id": 2
 	}, {
 		"id": 115,
-		"way": "O",
+		"way": "I",
 		"order": 1,
 		"stop_id": 210,
 		"line_id": 3
 	}, {
 		"id": 116,
-		"way": "O",
+		"way": "I",
 		"order": 2,
 		"stop_id": 198,
 		"line_id": 3
 	}, {
 		"id": 117,
-		"way": "O",
+		"way": "I",
 		"order": 3,
 		"stop_id": 47,
 		"line_id": 3
 	}, {
 		"id": 118,
-		"way": "O",
+		"way": "I",
 		"order": 4,
 		"stop_id": 150,
 		"line_id": 3
 	}, {
 		"id": 119,
-		"way": "O",
+		"way": "I",
 		"order": 5,
 		"stop_id": 14,
 		"line_id": 3
 	}, {
 		"id": 120,
-		"way": "O",
+		"way": "I",
 		"order": 6,
 		"stop_id": 191,
 		"line_id": 3
 	}, {
 		"id": 121,
-		"way": "O",
+		"way": "I",
 		"order": 7,
 		"stop_id": 91,
 		"line_id": 3
 	}, {
 		"id": 122,
-		"way": "O",
+		"way": "I",
 		"order": 8,
 		"stop_id": 139,
 		"line_id": 3
 	}, {
 		"id": 123,
-		"way": "O",
+		"way": "I",
 		"order": 9,
 		"stop_id": 54,
 		"line_id": 3
 	}, {
 		"id": 124,
-		"way": "O",
+		"way": "I",
 		"order": 10,
 		"stop_id": 22,
 		"line_id": 3
 	}, {
 		"id": 125,
-		"way": "O",
+		"way": "I",
 		"order": 11,
 		"stop_id": 85,
 		"line_id": 3
 	}, {
 		"id": 126,
-		"way": "O",
+		"way": "I",
 		"order": 12,
 		"stop_id": 16,
 		"line_id": 3
 	}, {
 		"id": 127,
-		"way": "O",
+		"way": "I",
 		"order": 13,
 		"stop_id": 182,
 		"line_id": 3
 	}, {
 		"id": 128,
-		"way": "O",
+		"way": "I",
 		"order": 14,
 		"stop_id": 181,
 		"line_id": 3
 	}, {
 		"id": 129,
-		"way": "O",
+		"way": "I",
 		"order": 15,
 		"stop_id": 1,
 		"line_id": 3
 	}, {
 		"id": 130,
-		"way": "O",
+		"way": "I",
 		"order": 16,
 		"stop_id": 162,
 		"line_id": 3
 	}, {
 		"id": 131,
-		"way": "O",
+		"way": "I",
 		"order": 17,
 		"stop_id": 97,
 		"line_id": 3
 	}, {
 		"id": 132,
-		"way": "O",
+		"way": "I",
 		"order": 18,
 		"stop_id": 208,
 		"line_id": 3
 	}, {
 		"id": 133,
-		"way": "O",
+		"way": "I",
 		"order": 19,
 		"stop_id": 167,
 		"line_id": 3
 	}, {
 		"id": 134,
-		"way": "O",
+		"way": "I",
 		"order": 20,
 		"stop_id": 124,
 		"line_id": 3
 	}, {
 		"id": 135,
-		"way": "O",
+		"way": "I",
 		"order": 21,
 		"stop_id": 104,
 		"line_id": 3
 	}, {
 		"id": 136,
-		"way": "O",
+		"way": "I",
 		"order": 22,
 		"stop_id": 12,
 		"line_id": 3
 	}, {
 		"id": 137,
-		"way": "O",
+		"way": "I",
 		"order": 23,
 		"stop_id": 57,
 		"line_id": 3
 	}, {
 		"id": 138,
-		"way": "O",
+		"way": "I",
 		"order": 24,
 		"stop_id": 2,
 		"line_id": 3
 	}, {
 		"id": 139,
-		"way": "O",
+		"way": "I",
 		"order": 25,
 		"stop_id": 155,
 		"line_id": 3
 	}, {
 		"id": 140,
-		"way": "O",
+		"way": "I",
 		"order": 26,
 		"stop_id": 148,
 		"line_id": 3
 	}, {
 		"id": 141,
-		"way": "O",
+		"way": "I",
 		"order": 27,
 		"stop_id": 119,
 		"line_id": 3
 	}, {
 		"id": 142,
-		"way": "O",
+		"way": "I",
 		"order": 28,
 		"stop_id": 59,
 		"line_id": 3
 	}, {
 		"id": 143,
-		"way": "O",
+		"way": "I",
 		"order": 29,
 		"stop_id": 77,
 		"line_id": 3
 	}, {
 		"id": 144,
-		"way": "O",
+		"way": "I",
 		"order": 30,
 		"stop_id": 4,
 		"line_id": 3
 	}, {
 		"id": 145,
-		"way": "I",
+		"way": "O",
 		"order": 1,
 		"stop_id": 4,
 		"line_id": 3
 	}, {
 		"id": 146,
-		"way": "I",
+		"way": "O",
 		"order": 2,
 		"stop_id": 77,
 		"line_id": 3
 	}, {
 		"id": 147,
-		"way": "I",
+		"way": "O",
 		"order": 3,
 		"stop_id": 59,
 		"line_id": 3
 	}, {
 		"id": 148,
-		"way": "I",
+		"way": "O",
 		"order": 4,
 		"stop_id": 119,
 		"line_id": 3
 	}, {
 		"id": 149,
-		"way": "I",
+		"way": "O",
 		"order": 5,
 		"stop_id": 148,
 		"line_id": 3
 	}, {
 		"id": 150,
-		"way": "I",
+		"way": "O",
 		"order": 6,
 		"stop_id": 155,
 		"line_id": 3
 	}, {
 		"id": 151,
-		"way": "I",
+		"way": "O",
 		"order": 7,
 		"stop_id": 2,
 		"line_id": 3
 	}, {
 		"id": 152,
-		"way": "I",
+		"way": "O",
 		"order": 8,
 		"stop_id": 57,
 		"line_id": 3
 	}, {
 		"id": 153,
-		"way": "I",
+		"way": "O",
 		"order": 9,
 		"stop_id": 12,
 		"line_id": 3
 	}, {
 		"id": 154,
-		"way": "I",
+		"way": "O",
 		"order": 10,
 		"stop_id": 104,
 		"line_id": 3
 	}, {
 		"id": 155,
-		"way": "I",
+		"way": "O",
 		"order": 11,
 		"stop_id": 124,
 		"line_id": 3
 	}, {
 		"id": 156,
-		"way": "I",
+		"way": "O",
 		"order": 12,
 		"stop_id": 167,
 		"line_id": 3
 	}, {
 		"id": 157,
-		"way": "I",
+		"way": "O",
 		"order": 13,
 		"stop_id": 208,
 		"line_id": 3
 	}, {
 		"id": 158,
-		"way": "I",
+		"way": "O",
 		"order": 14,
 		"stop_id": 97,
 		"line_id": 3
 	}, {
 		"id": 159,
-		"way": "I",
+		"way": "O",
 		"order": 15,
 		"stop_id": 162,
 		"line_id": 3
 	}, {
 		"id": 160,
-		"way": "I",
+		"way": "O",
 		"order": 16,
 		"stop_id": 1,
 		"line_id": 3
 	}, {
 		"id": 161,
-		"way": "I",
+		"way": "O",
 		"order": 17,
 		"stop_id": 181,
 		"line_id": 3
 	}, {
 		"id": 162,
-		"way": "I",
+		"way": "O",
 		"order": 18,
 		"stop_id": 182,
 		"line_id": 3
 	}, {
 		"id": 163,
-		"way": "I",
+		"way": "O",
 		"order": 19,
 		"stop_id": 16,
 		"line_id": 3
 	}, {
 		"id": 164,
-		"way": "I",
+		"way": "O",
 		"order": 20,
 		"stop_id": 85,
 		"line_id": 3
 	}, {
 		"id": 165,
-		"way": "I",
+		"way": "O",
 		"order": 21,
 		"stop_id": 22,
 		"line_id": 3
 	}, {
 		"id": 166,
-		"way": "I",
+		"way": "O",
 		"order": 22,
 		"stop_id": 54,
 		"line_id": 3
 	}, {
 		"id": 167,
-		"way": "I",
+		"way": "O",
 		"order": 23,
 		"stop_id": 139,
 		"line_id": 3
 	}, {
 		"id": 168,
-		"way": "I",
+		"way": "O",
 		"order": 24,
 		"stop_id": 91,
 		"line_id": 3
 	}, {
 		"id": 169,
-		"way": "I",
+		"way": "O",
 		"order": 25,
 		"stop_id": 191,
 		"line_id": 3
 	}, {
 		"id": 170,
-		"way": "I",
+		"way": "O",
 		"order": 26,
 		"stop_id": 14,
 		"line_id": 3
 	}, {
 		"id": 171,
-		"way": "I",
+		"way": "O",
 		"order": 27,
 		"stop_id": 150,
 		"line_id": 3
 	}, {
 		"id": 172,
-		"way": "I",
+		"way": "O",
 		"order": 28,
 		"stop_id": 47,
 		"line_id": 3
 	}, {
 		"id": 173,
-		"way": "I",
+		"way": "O",
 		"order": 29,
 		"stop_id": 198,
 		"line_id": 3
 	}, {
 		"id": 174,
-		"way": "I",
+		"way": "O",
 		"order": 30,
 		"stop_id": 210,
 		"line_id": 3
