@@ -13,11 +13,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Scanner;
 
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,6 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
@@ -146,9 +144,183 @@ public class StopService {
 		return -1;
 	}
 	
+	public Stop findStopByLabel(String label)
+	{
+		return stopRepository.findByLabel(label);
+	}
+	
+	public void getShortestWayBetween(Stop startStop, Stop endStop, DateTime now)
+	{
+		
+		ArrayList<Stop> allStop;
+		HashMap<Stop,Integer> distanceByStop = new HashMap<>();
+		HashMap<Stop,Stop> predecessor = new HashMap<>();
+		
+		
+		
+		
+		allStop =  (ArrayList<Stop>) stopRepository.findAll();
+		//Dijkstra initialization
+		
+		
+		for(Stop eachStop : allStop)
+		{
+			distanceByStop.put(eachStop, Integer.MAX_VALUE);
+		}
+		distanceByStop.put(startStop, 0);
+		//end ini
+		
+//		Dijkstra(G,Poids,sdeb)
+//		1 Initialisation(G,sdeb)
+//		2 Q := ensemble de tous les nœuds
+//		3 tant que Q n'est pas un ensemble vide
+//		4       faire s1 := Trouve_min(Q)
+//		5       Q := Q privé de s1
+//		6       pour chaque nœud s2 voisin de s1
+//		7           faire maj_distances(s1,s2)
+		
+		while(!allStop.isEmpty())
+		{
+			Stop s1 = findClosestNode(allStop,distanceByStop);
+			System.out.println(s1.getLabel());
+			allStop.remove(s1);
+			System.out.println("NEIGHBOURS: "+s1.getNeighboursId().size());
+			for(long neighbourId :s1.getNeighboursId())
+			{
+				Stop neighbour = stopRepository.findOne(neighbourId);
+				System.out.println("NEIGHBOUR LABEL: "+neighbour.getLabel());
+				updateDistances(s1, neighbour,distanceByStop,predecessor,now);
+				System.out.println(distanceByStop.get(neighbour));
+			}
+		}
+		
+		
+		ArrayList<Stop> way = new ArrayList<>();
+		Stop aStop = endStop;
+		while(!aStop.equals(startStop))
+		{			
+			way.add(new Stop(aStop));
+			
+			aStop = predecessor.get(aStop);
+			
+		}
+		
+		way.add(startStop);
+		
+		for(Stop s : way)
+		{
+			System.out.println(s.getLabel());
+		}
+		
+		
+	}
+	
+//	
+//	maj_distances(s1,s2)
+//	1 si d[s2] > d[s1] + Poids(s1,s2)      /* Si la distance de sdeb à s2 est plus grande que */
+//	2                                      /* celle de sdeb à S1 plus celle de S1 à S2 */
+//	3    alors 
+//	4        d[s2] := d[s1] + Poids(s1,s2) /* On prend ce nouveau chemin qui est plus court */
+//	5        prédécesseur[s2] := s1        /* En notant par où on passe */
+//	
+	
+	private void updateDistances(Stop a, Stop b, HashMap<Stop, Integer> distanceByStop, HashMap<Stop, Stop> predecessor, DateTime now)
+	{
+		
+		if(distanceByStop.get(b) > distanceByStop.get(a) + getDistanceBetweenStops(a, b, now))
+		{
+			distanceByStop.put(b,  distanceByStop.get(a) + getDistanceBetweenStops(a, b,now));
+			System.out.println(distanceByStop.get(b));
+			predecessor.put(b, a);
+			
+		}
+		
+	}
 	
 	
+	private Stop findClosestNode(ArrayList<Stop> remainingStops, HashMap<Stop, Integer> distanceByStop)
+	{
+		int min = Integer.MAX_VALUE;
+		Stop resultStop=null;
+		
+		for(Stop oneStop : remainingStops)
+		{
+			if(distanceByStop.get(oneStop) <= min)
+			{
+				min = distanceByStop.get(oneStop);
+				System.out.println(distanceByStop.get(oneStop));
+				resultStop = oneStop;
+			}
+		}
+		return resultStop;
+	}
 	
+	
+	private int getDistanceBetweenStops(Stop firstStop, Stop secondStop, DateTime timeWeAreOnFirstStop)
+	{
+		if(!firstStop.getNeighboursId().contains(secondStop.getId()))
+		{
+			throw new RuntimeException("Stops are not neighbours");
+		}
+		
+		DateTime earliestTime=new DateTime(3000,1,1,1,1);
+		Line earliestTimeLine=null;
+		
+		for(Schedule oneLineSchedule : firstStop.getSchedules())
+		{
+			if(secondStop.getLines().contains(oneLineSchedule.getLine()))
+			{
+				
+				
+				for(DateTime oneLineScheduleTime : oneLineSchedule.getSchedules())
+				{
+					//System.out.println(oneLineScheduleTime +" : "+ timeWeAreOnFirstStop);
+					
+					if(oneLineScheduleTime.getHourOfDay() >= timeWeAreOnFirstStop.getHourOfDay()  )
+					{
+						if( (oneLineScheduleTime.getHourOfDay()==timeWeAreOnFirstStop.getHourOfDay() && oneLineScheduleTime.getMinuteOfHour()>= timeWeAreOnFirstStop.getMinuteOfHour()) || oneLineScheduleTime.getHourOfDay() > timeWeAreOnFirstStop.getHourOfDay() )
+						{
+							if(oneLineScheduleTime.isBefore(earliestTime))
+							{
+								earliestTime = oneLineScheduleTime;
+								//System.out.println("EARLIEST TIME: "+earliestTime);
+								earliestTimeLine  = oneLineSchedule.getLine();
+								break;		
+							}
+						}
+						
+					}
+				}
+				
+			}
+		}
+		
+		for( Schedule secondStopSchedule :  secondStop.getSchedules())
+		{
+			if(secondStopSchedule.getLine().equals(earliestTimeLine))
+			{
+				for(DateTime secondStopTime : secondStopSchedule.getSchedules())
+				{
+					if(secondStopTime.getHourOfDay() >= earliestTime.getHourOfDay()  )
+					{
+						if( (secondStopTime.getHourOfDay()==earliestTime.getHourOfDay() && secondStopTime.getMinuteOfHour()>= earliestTime.getMinuteOfHour()) || secondStopTime.getHourOfDay() > earliestTime.getHourOfDay() )
+						{
+							return secondStopTime.getMinuteOfDay() - earliestTime.getMinuteOfDay();
+						}
+					}
+				}
+			}
+			
+			
+		}
+		
+		
+		
+		return Integer.MAX_VALUE;
+		
+		
+		
+	}
 	
 	
 	//Method that finds all available roads to one destination stop
@@ -829,6 +1001,58 @@ public class StopService {
 		return null;
 	}
 
+	
+	
+	
+	public void debug()
+	{
+		ArrayList<Stop> stops = (ArrayList<Stop>) stopRepository.findAll();
+		 Scanner scanner = new Scanner(System.in);
+		for(Stop s : stops)
+		{
+			System.out.println("----------------------------------------------------");
+			System.out.println("STOP: "+s.getLabel() );
+			System.out.println("ID: "+s.getId() );
+			System.out.println("LINES: ");
+			for(Line l : s.getLines())
+				System.out.print(l.getId()+" ");
+			System.out.println();
+			System.out.println("NEIGHBOURS");
+			for(long nId : s.getNeighboursId())
+			{
+				Stop n =stopRepository.findOne(nId);
+				System.out.println("\tID: "+n.getId() +" : " + n.getLabel());
+			}
+			System.out.println(s.getSchedules().size()+" SCHEDULES");
+			for(Schedule sc : s.getSchedules())
+			{
+				System.out.println("\tLine: "+sc.getLine().getId()+", way: "+ sc.getway()+", dates: "+ sc.getSchedules().size());
+			}
+			
+			boolean ok = true;
+			while(ok)
+			{
+				String reponse = scanner.nextLine();
+				switch(reponse){
+					case "n":
+					{
+						ok=false;
+						break;
+					}
+					default:
+					{
+						break;
+					}
+				}
+					
+			}
+		}
+		
+		scanner.close();
+	}
+	
+	
+	
 	/**
 	 * 
 	 * @param line

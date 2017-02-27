@@ -54,6 +54,17 @@ public class Stop {
 	{
 		
 	}
+	
+	public Stop(Stop stop)
+	{
+		this.setId(stop.getId());
+		this.setLabel(stop.getLabel());
+		this.setLines(stop.getLines());
+		this.setNeighboursId(stop.getNeighboursId());
+		this.setOrderInLineByWay(stop.getOrderInLineByWay());
+		this.setPoint(stop.getPoint());
+		this.setSchedules(stop.getSchedules());
+	}
 
 
 	public Stop(long id)

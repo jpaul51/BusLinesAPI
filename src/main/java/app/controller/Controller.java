@@ -108,6 +108,14 @@ public class Controller {
 		return returnData;
 	}
 	
+	@RequestMapping(value="/getShortestWayBetween",method = RequestMethod.GET)
+	@ResponseBody
+	public void getShortestWayBetween(@RequestParam("start")String firstStop, @RequestParam("end")String endStop)
+	{
+		
+		stopService.getShortestWayBetween(stopService.findStopByLabel(firstStop),stopService.findStopByLabel(endStop),new DateTime(12,12,12,12, 12));
+	}
+	
 	
 	@RequestMapping(value="/getStopSchedules",method = RequestMethod.GET)
 	@ResponseBody
@@ -116,6 +124,14 @@ public class Controller {
 		//
 		List<Schedule> schedules = stopService.getStopBylabel(stop).getSchedules();
 		return schedules;
+	}
+	
+	@RequestMapping(value="/debug",method = RequestMethod.GET)
+	@ResponseBody
+	public void getStopSchedules()
+	{
+		//
+		stopService.debug();
 	}
 	
 	@RequestMapping(value="/countStopSchedules",method = RequestMethod.GET)

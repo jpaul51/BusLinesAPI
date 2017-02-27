@@ -40,7 +40,7 @@
 		"longitude": 5.234349
 	}, {
 		"id": 10,
-		"label": "M\u00e2con",
+		"label": "Macon",
 		"latitude": 46.2102792982,
 		"longitude": 5.2192354202271
 	}, {
@@ -190,12 +190,12 @@
 		"longitude": 5.2279472351074
 	}, {
 		"id": 46,
-		"label": "Ch\u00e2teau",
+		"label": "Chateau",
 		"latitude": 46.248606041348,
 		"longitude": 5.2188920974731
 	}, {
 		"id": 47,
-		"label": "Ch\u00eanaie",
+		"label": "Chenaie",
 		"latitude": 46.178196087754,
 		"longitude": 5.2070903778076
 	}, {
@@ -493,7 +493,7 @@
 		"longitude": 5.2093648910522
 	}, {
 		"id": 119,
-		"label": "Lo\u00ebze",
+		"label": "Loeze",
 		"latitude": 46.198784967776,
 		"longitude": 5.2580738067627
 	}, {
@@ -813,7 +813,7 @@
 		"longitude": 5.2149733901023
 	}, {
 		"id": 198,
-		"label": "Vieux Ch\u00eane",
+		"label": "Vieux Chene",
 		"latitude": 46.177126324827,
 		"longitude": 5.2043437957764
 	}, {
@@ -823,7 +823,7 @@
 		"longitude": 5.2112531661987
 	}, {
 		"id": 200,
-		"label": "Viriat \u00c9coles",
+		"label": "Viriat ecoles",
 		"latitude": 46.254719219314,
 		"longitude": 5.2152442932129
 	}, {
