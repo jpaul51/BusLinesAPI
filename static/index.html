@@ -17,7 +17,9 @@
 			<tr><th>URL</th><th>TYPE</th><th>PARAMETERS</th><th>RETURN</th></tr>
 			<tr><td>/getlinesandstops</td><td>GET</td><td>null</td><td>A list of lines and a list of stops</td></tr>
 			<tr><td>/getcloseststop</td><td>GET</td><td>latitude:double,longitude:double</td><td>Stop object</td></tr>
-			<tr><td>/getShortestWayBetween</td><td>GET</td><td>start: Object, end: Object, date: org.joda.time.DateTime (can be null)</td><td>The list of stops of the shortest way between start and end</td>
+			<tr><td>/getShortestWayBetween</td><td>GET</td><td>start: String, end: String, date: org.joda.time.DateTime (can be null)</td><td>The list of stops of the shortest way between start and end</td></tr>
+			<tr><td>/user</td><td>GET</td><td>cats: boolean (false by default)</td><td>true if user is created or updated</td></tr>
+			<tr><td>/doilikecats</td><td>GET</td><td>null</td><td>true if user likes cats</td></tr>
 			</table>
 
         

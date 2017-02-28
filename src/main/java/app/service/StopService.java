@@ -149,6 +149,7 @@ public class StopService {
 		return stopRepository.findByLabelToLower(label);
 	}
 	
+	
 	public ArrayList<Stop> getShortestWayBetween(Stop startStop, Stop endStop, DateTime now)
 	{
 		

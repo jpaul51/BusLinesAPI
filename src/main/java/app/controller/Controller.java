@@ -28,6 +28,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
+import app.dao.UserRepository;
+import app.model.CustomUser;
 import app.model.LinesAndStops;
 import app.model.Schedule;
 import app.model.Stop;
@@ -42,6 +44,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import app.service.LineService;
 import app.service.LinesAndStopsService;
 import app.service.StopService;
+import app.service.UserService;
 
 
 /**
@@ -62,6 +65,7 @@ public class Controller {
 @Autowired LineService lineService;	
 @Autowired StopService stopService;	
 @Autowired LinesAndStopsService linesAndStopsService;
+@Autowired UserService userService;
 
 	/**
 	 * Loads DB from json files
@@ -83,18 +87,46 @@ public class Controller {
 	
 	@RequestMapping(value="/user", method = RequestMethod.GET)
 	@ResponseBody
-	  public Object registerUser(@RequestParam("cats") Optional<Boolean> likesCats) {
-		 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-	     String id = auth.getName(); //get logged in username
-	    // User currentUser = (User)auth.getPrincipal();
-	    // UsernamePasswordAuthenticationToken token  = new UsernamePasswordAuthenticationToken(principal, auth.getCredentials());
-	    // User activeUser = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-	    
-	     Authentication authentication =
-	    	      SecurityContextHolder.getContext().getAuthentication();
-	    	   // app.model.User custom = (app.model.User) (authentication == null ? null : auth.getPrincipal());
-	     return auth.toString();
+	  public boolean registerUser(Principal principal, @RequestParam(value="cats", required=false) Optional<Boolean> likesCats) {
+
+		
+	
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();	
+		
+		if(!userService.userExists(authentication.getName()))
+		{
+			userService.registerUser(authentication.getName(), (likesCats.isPresent() && likesCats.get() ));
+			
+		}
+		else
+		{
+			userService.deleteUser(authentication.getName());
+			userService.registerUser(authentication.getName(),(likesCats.isPresent() && likesCats.get() ));
+			
+		}
+		
+		return true;
+		
 	  }
+	
+	
+	@RequestMapping(value="/doilikecats", method = RequestMethod.GET)
+	@ResponseBody
+	  public String doesUserLikesCats(Principal principal)
+	  {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();	
+		
+		if(userService.userExists(authentication.getName()))
+		{
+			if(userService.findCustomUser(authentication.getName()).isLikeCats())
+				return "true";
+			else
+				return "false";
+		}
+		else
+			return "User does not exists";
+	  }
+	
 	
 	@RequestMapping(value="/getRoad",method = RequestMethod.GET)
 	@ResponseBody
@@ -112,6 +144,7 @@ public class Controller {
 	
 	@RequestMapping(value="/getShortestWayBetween",method = RequestMethod.GET)
 	@ResponseBody
+	
 	public ArrayList<Stop> getShortestWayBetween(@RequestParam("start")String firstStop, @RequestParam("end")String endStop,@RequestParam(value="date",required=false)DateTime now)
 	{
 		
