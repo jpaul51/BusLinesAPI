@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
@@ -110,10 +112,31 @@ public class Controller {
 	
 	@RequestMapping(value="/getShortestWayBetween",method = RequestMethod.GET)
 	@ResponseBody
-	public void getShortestWayBetween(@RequestParam("start")String firstStop, @RequestParam("end")String endStop)
+	public ArrayList<Stop> getShortestWayBetween(@RequestParam("start")String firstStop, @RequestParam("end")String endStop,@RequestParam(value="date",required=false)DateTime now)
 	{
 		
-		stopService.getShortestWayBetween(stopService.findStopByLabel(firstStop),stopService.findStopByLabel(endStop),new DateTime(12,12,12,12, 12));
+		if(now == null)
+		{
+			now = DateTime.now();
+		}
+		
+		Stop sstartStop = stopService.findStopByLabel(firstStop);
+		Stop sendStop = stopService.findStopByLabel(endStop);
+		
+		if(sstartStop == null)
+			System.out.println("START NULL");
+		if(sendStop==null)
+			System.out.println("END NULL");
+		
+		if(sstartStop!=null && sendStop!=null)
+		{
+			return stopService.getShortestWayBetween(sstartStop,sendStop,now);
+			
+		}
+		else
+		{
+			return new ArrayList<Stop>();
+		}
 	}
 	
 	

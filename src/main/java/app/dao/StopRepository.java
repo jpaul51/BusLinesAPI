@@ -16,6 +16,9 @@ public interface StopRepository extends CrudRepository<Stop, Long> {
 
 	Stop findByLabel(String label);
 	
+	@Query(value="SELECT s FROM Stop s WHERE lower(s.label)=lower(:label)")
+	Stop findByLabelToLower(@Param("label")String label);
+	
 	
 	@Query(value ="SELECT s FROM Stop s ORDER BY distance(:point,s.point) "
 	 	)

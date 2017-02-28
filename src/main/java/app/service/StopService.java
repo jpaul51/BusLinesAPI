@@ -95,7 +95,7 @@ public class StopService {
 
 	public List<Stop> getOneStopNeighbour(String stopLabel)
 	{
-		Stop stop = stopRepository.findByLabel(stopLabel);
+		Stop stop = stopRepository.findByLabelToLower(stopLabel);
 		ArrayList<Stop> neighbours = new ArrayList<>();
 		
 		for(long neighbourId : stop.getNeighboursId())
@@ -108,7 +108,7 @@ public class StopService {
 	
 	public int minutesINeedToGoThereSameLine(String startStopLabel, String destinationStopLabel)
 	{
-		Stop startStop = stopRepository.findByLabel(startStopLabel);
+		Stop startStop = stopRepository.findByLabelToLower(startStopLabel);
 		Stop destinationStop = stopRepository.findByLabel(destinationStopLabel);
 		
 		
@@ -146,10 +146,10 @@ public class StopService {
 	
 	public Stop findStopByLabel(String label)
 	{
-		return stopRepository.findByLabel(label);
+		return stopRepository.findByLabelToLower(label);
 	}
 	
-	public void getShortestWayBetween(Stop startStop, Stop endStop, DateTime now)
+	public ArrayList<Stop> getShortestWayBetween(Stop startStop, Stop endStop, DateTime now)
 	{
 		
 		ArrayList<Stop> allStop;
@@ -187,32 +187,36 @@ public class StopService {
 			System.out.println("NEIGHBOURS: "+s1.getNeighboursId().size());
 			for(long neighbourId :s1.getNeighboursId())
 			{
+				
 				Stop neighbour = stopRepository.findOne(neighbourId);
 				System.out.println("NEIGHBOUR LABEL: "+neighbour.getLabel());
-				updateDistances(s1, neighbour,distanceByStop,predecessor,now);
+				if(allStop.contains(neighbour))
+					updateDistances(s1, neighbour,distanceByStop,predecessor,now);
 				System.out.println(distanceByStop.get(neighbour));
 			}
 		}
 		
-		
+		System.out.println("NEXT");
 		ArrayList<Stop> way = new ArrayList<>();
 		Stop aStop = endStop;
+		System.out.println("END STOP: "+endStop.getLabel());
 		while(!aStop.equals(startStop))
 		{			
 			way.add(new Stop(aStop));
 			
 			aStop = predecessor.get(aStop);
+			System.out.println("PREDECESSOR: "+aStop.getLabel());
 			
 		}
 		
 		way.add(startStop);
-		
+		System.out.println("WAY");
 		for(Stop s : way)
 		{
 			System.out.println(s.getLabel());
 		}
 		
-		
+		return way;
 	}
 	
 //	
@@ -229,6 +233,7 @@ public class StopService {
 		
 		if(distanceByStop.get(b) > distanceByStop.get(a) + getDistanceBetweenStops(a, b, now))
 		{
+			
 			distanceByStop.put(b,  distanceByStop.get(a) + getDistanceBetweenStops(a, b,now));
 			System.out.println(distanceByStop.get(b));
 			predecessor.put(b, a);
@@ -373,7 +378,7 @@ public class StopService {
 	public int howMuchMinutesDoINeedToGetThere(String startStopLabel, String destinationStopLabel,DateTime now)
 	{
 		System.out.println("FIND STOPS");;
-		Stop startStop =stopRepository.findByLabel(startStopLabel);
+		Stop startStop =stopRepository.findByLabelToLower(startStopLabel);
 		Stop destinationStop = stopRepository.findByLabel(destinationStopLabel);
 
 
@@ -518,7 +523,7 @@ public class StopService {
 
 	public Stop getStopBylabel(String label)
 	{
-		return stopRepository.findByLabel(label);
+		return stopRepository.findByLabelToLower(label);
 	}
 
 
@@ -553,7 +558,7 @@ public class StopService {
 				{
 					for(String period : periodList)
 					{
-						if((eachStopLine.getId() == 1 || eachStopLine.getId() == 2 || eachStopLine.getId() == 3) )
+						if((eachStopLine.getId() == 1 || eachStopLine.getId() == 2 || eachStopLine.getId() == 3 || eachStopLine.getId() == 4) )
 						{
 							File file = new File(CSVFILEPATH+"L"+eachStopLine.getId()+"-D"+wayFile+"-"+period+".csv");
 							try (FileReader reader = new FileReader(file)) {
@@ -570,7 +575,7 @@ public class StopService {
 								{
 									//System.out.println(schedules.get(0).toString().trim()+": "+schedules.get(0).compareTo("norelan"));
 									//System.out.println(schedules.get(0).toString().trim().toLowerCase()+" == norelan");
-									//System.out.println(schedules.get(0).toString().trim().toLowerCase().replaceAll(" ", "") +" == "+(eachStop.getLabel().toString().trim().toLowerCase().replaceAll(" ","")));
+									System.out.println(schedules.get(0).toString().trim().toLowerCase().replaceAll(" ", "") +" == "+(eachStop.getLabel().toString().trim().toLowerCase().replaceAll(" ","")));
 									if(schedules.get(0).toString().trim().toLowerCase().replaceAll(" ", "").contentEquals(eachStop.getLabel().toString().trim().toLowerCase().replaceAll(" ","")))
 									{
 
@@ -748,7 +753,7 @@ public class StopService {
 				else
 				{
 					orderInLine = new HashMap<>();
-					String stopLabel = stopNode.get("label").asText();
+					String stopLabel = stopNode.get("label").asText().trim();
 					double latitude  = stopNode.get("latitude").asDouble();
 					double longitude = stopNode.get("longitude").asDouble();
 					GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
@@ -835,8 +840,10 @@ public class StopService {
 														{
 															if(orderByLineOneStop.getValue().get(oneWay.getKey()) == aNeighbour.getOrderInLineByWay().get(orderByLineOneStop.getKey()).get(oneWay.getKey())+1  /*|| orderByLineOneStop.getValue() == aNeighbour.getOrderInLine().get(orderByLineOneStop.getKey())-1 */  )
 															{
-																
+																if(!oneStopNeighboursId.contains(aNeighbour.getId()))
+																{
 																oneStopNeighboursId.add(aNeighbour.getId());
+																}
 															}
 														}
 													}
@@ -1008,27 +1015,7 @@ public class StopService {
 	{
 		ArrayList<Stop> stops = (ArrayList<Stop>) stopRepository.findAll();
 		 Scanner scanner = new Scanner(System.in);
-		for(Stop s : stops)
-		{
-			System.out.println("----------------------------------------------------");
-			System.out.println("STOP: "+s.getLabel() );
-			System.out.println("ID: "+s.getId() );
-			System.out.println("LINES: ");
-			for(Line l : s.getLines())
-				System.out.print(l.getId()+" ");
-			System.out.println();
-			System.out.println("NEIGHBOURS");
-			for(long nId : s.getNeighboursId())
-			{
-				Stop n =stopRepository.findOne(nId);
-				System.out.println("\tID: "+n.getId() +" : " + n.getLabel());
-			}
-			System.out.println(s.getSchedules().size()+" SCHEDULES");
-			for(Schedule sc : s.getSchedules())
-			{
-				System.out.println("\tLine: "+sc.getLine().getId()+", way: "+ sc.getway()+", dates: "+ sc.getSchedules().size());
-			}
-			
+		 
 			boolean ok = true;
 			while(ok)
 			{
@@ -1039,15 +1026,85 @@ public class StopService {
 						ok=false;
 						break;
 					}
+					case "exit":
+					{
+						ok = false;
+					}
 					default:
 					{
+						 Stop s = stopRepository.findByLabelToLower(reponse);
+						 if(s !=null)
+						 {
+						 System.out.println("----------------------------------------------------");
+							System.out.println("STOP: "+s.getLabel() );
+							System.out.println("ID: "+s.getId() );
+							System.out.println("LINES: ");
+							for(Line l : s.getLines())
+								System.out.print(l.getId()+" ");
+							System.out.println();
+							System.out.println("NEIGHBOURS");
+							for(long nId : s.getNeighboursId())
+							{
+								Stop n =stopRepository.findOne(nId);
+								System.out.println("\tID: "+n.getId() +" : " + n.getLabel());
+							}
+							System.out.println(s.getSchedules().size()+" SCHEDULES");
+							for(Schedule sc : s.getSchedules())
+							{
+								System.out.println("\tLine: "+sc.getLine().getId()+", way: "+ sc.getway()+", dates: "+ sc.getSchedules().size());
+							}
 						break;
+						 }
+						 else
+						 {
+							 System.out.println("NOT FOUND");
+						 }
 					}
 				}
 					
 			}
-		}
 		
+		 
+//		for(Stop s : stops)
+//		{
+//			System.out.println("----------------------------------------------------");
+//			System.out.println("STOP: "+s.getLabel() );
+//			System.out.println("ID: "+s.getId() );
+//			System.out.println("LINES: ");
+//			for(Line l : s.getLines())
+//				System.out.print(l.getId()+" ");
+//			System.out.println();
+//			System.out.println("NEIGHBOURS");
+//			for(long nId : s.getNeighboursId())
+//			{
+//				Stop n =stopRepository.findOne(nId);
+//				System.out.println("\tID: "+n.getId() +" : " + n.getLabel());
+//			}
+//			System.out.println(s.getSchedules().size()+" SCHEDULES");
+//			for(Schedule sc : s.getSchedules())
+//			{
+//				System.out.println("\tLine: "+sc.getLine().getId()+", way: "+ sc.getway()+", dates: "+ sc.getSchedules().size());
+//			}
+//			
+//			boolean ok = true;
+//			while(ok)
+//			{
+//				String reponse = scanner.nextLine();
+//				switch(reponse){
+//					case "n":
+//					{
+//						ok=false;
+//						break;
+//					}
+//					default:
+//					{
+//						break;
+//					}
+//				}
+//					
+//			}
+//		}
+//		
 		scanner.close();
 	}
 	
