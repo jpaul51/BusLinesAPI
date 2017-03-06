@@ -1,5 +1,9 @@
 package app.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bedatadriven.jackson.datatype.jts.JtsModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
@@ -46,7 +51,7 @@ import app.service.LinesAndStopsService;
 import app.service.StopService;
 import app.service.UserService;
 
-
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 /**
  * My controller links my httprequests with my services !
  * @author Jonas
@@ -83,6 +88,27 @@ public class Controller {
 		return "oui";
 	}
 	
+	@RequestMapping(value="/location", method = RequestMethod.GET)
+	@ResponseBody
+	public String whereIsMyAppHosted()
+	{
+		String ip="";
+		try {
+
+		URL whatismyip = new URL("http://ip-api.com/json");
+		BufferedReader in = new BufferedReader(new InputStreamReader(
+		                whatismyip.openStream()));
+
+		
+	
+			ip = in.readLine();
+			System.out.println(ip);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} //you get the IP as a String
+		return ip;
+	}
 
 	
 	@RequestMapping(value="/user", method = RequestMethod.GET)
@@ -270,7 +296,9 @@ public class Controller {
 	@Bean
     public ObjectMapper objectMapper() {
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.registerModule(new JtsModule());
+		  mapper.registerModules(new JodaModule(),new JtsModule());
+	       
+	        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		return mapper;
 	}
 	

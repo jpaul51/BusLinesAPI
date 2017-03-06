@@ -11,5 +11,5 @@ app\dao\UserRepository.class
 app\model\LinesAndStops.class
 app\dao\LineRepository.class
 app\DemoApplication.class
-app\model\User.class
+app\model\CustomUser.class
 app\model\Schedule.class
