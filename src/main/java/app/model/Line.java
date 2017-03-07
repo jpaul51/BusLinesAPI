@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vividsolutions.jts.geom.MultiLineString;
@@ -22,7 +23,7 @@ public class Line {
 	String color;
 	
 	MultiLineString lines=null;
-	@JsonProperty("kml_path")
+	@JsonIgnore
 	String pathFile;
 	
 public Line(){
