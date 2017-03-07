@@ -38,6 +38,7 @@ import app.dao.LineRepository;
 import app.dao.ScheduleRepository;
 import app.dao.StopRepository;
 import app.model.Line;
+import app.model.LinesAndStops;
 import app.model.Schedule;
 import app.model.Stop;
 
@@ -150,7 +151,7 @@ public class StopService {
 	}
 	
 	
-	public ArrayList<Stop> getShortestWayBetween(Stop startStop, Stop endStop, DateTime now)
+	public LinesAndStops getShortestWayBetween(Stop startStop, Stop endStop, DateTime now)
 	{
 		
 		ArrayList<Stop> allStop;
@@ -212,12 +213,22 @@ public class StopService {
 		
 		way.add(startStop);
 		System.out.println("WAY");
+		ArrayList<Line> linesUsed = new ArrayList<>();
 		for(Stop s : way)
 		{
+			for(Line l : s.getLines())
+			{
+			if(!linesUsed.contains(l))
+			{
+				linesUsed.add(l);
+			}
+			}
 			System.out.println(s.getLabel());
 		}
-		
-		return way;
+		LinesAndStops las = new LinesAndStops();
+				las.setLines(linesUsed);
+		las.setStops(way);
+		return las;
 	}
 	
 //	

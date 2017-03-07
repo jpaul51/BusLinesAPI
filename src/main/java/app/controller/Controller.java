@@ -171,7 +171,7 @@ public class Controller {
 	@RequestMapping(value="/getShortestWayBetween",method = RequestMethod.GET)
 	@ResponseBody
 	
-	public ArrayList<Stop> getShortestWayBetween(@RequestParam("start")String firstStop, @RequestParam("end")String endStop,@RequestParam(value="date",required=false)DateTime now)
+	public LinesAndStops getShortestWayBetween(@RequestParam("start")String firstStop, @RequestParam("end")String endStop,@RequestParam(value="date",required=false)DateTime now)
 	{
 		
 		if(now == null)
@@ -194,7 +194,7 @@ public class Controller {
 		}
 		else
 		{
-			return new ArrayList<Stop>();
+			return null;
 		}
 	}
 	

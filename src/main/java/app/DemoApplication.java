@@ -41,7 +41,7 @@ public class DemoApplication   extends WebSecurityConfigurerAdapter {
 	    http
 	      .antMatcher("/**")
 	      .authorizeRequests()
-	        .antMatchers("/", "/getlinesandstops**", "getShortestWayBetween**")
+	        .antMatchers("/", "/getlinesandstops**", "/getShortestWayBetween**")
 	        .permitAll()
 	      .anyRequest()
 	        .authenticated();
