@@ -625,7 +625,7 @@ public class StopService {
 									schoolPeriod = false;
 
 								oneSchedule = new Schedule(stopSchedules,constraintList,way,eachStopLine,schoolPeriod);
-
+								oneSchedule.setLineItBelongs(eachStopLine.getId());
 								scheduleRepository.save(oneSchedule);
 								stopSchedulesObjectlist.add(oneSchedule);
 
@@ -793,6 +793,7 @@ public class StopService {
 				}
 				currentStop.setOrderInLineByWay(orderInLine);
 				ArrayList<Line> linesAStopBelongs = new ArrayList<>();
+				ArrayList<Long> linesIdAStopBelongs = new ArrayList<>();
 				for( Entry<Long, HashMap<String,Integer>> orderInLineEntry : currentStop.getOrderInLineByWay().entrySet())
 				{
 
@@ -802,10 +803,10 @@ public class StopService {
 					
 					if(linesIdWeManage.contains(aLine.getId()))//line 5 is loop, we'll manage this later, other lines don't have schedules yet
 						linesAStopBelongs.add(aLine);						
-
+						linesIdAStopBelongs.add(aLine.getId());
 				}
 				currentStop.setLines(linesAStopBelongs);
-
+				currentStop.setLinesId(linesIdAStopBelongs);
 				if(!linesAStopBelongs.isEmpty()) // We don't add a stop that belongs to a non managed line
 					stopsById.put(currentStop.getId(),currentStop);
 

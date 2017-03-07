@@ -36,6 +36,7 @@ public class Schedule {
 	Line line;//Contains multiLineString, to remove 
 	Boolean schoolPeriod=true;
 	
+	long lineItBelongs;
 	
 	public Schedule() {
 		super();
@@ -149,6 +150,14 @@ public class Schedule {
 
 	
 
+
+	public long getLineItBelongs() {
+		return lineItBelongs;
+	}
+
+	public void setLineItBelongs(long lineItBelongs) {
+		this.lineItBelongs = lineItBelongs;
+	}
 
 	public Line getLine() {
 		return line;

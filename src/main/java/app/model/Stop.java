@@ -43,6 +43,9 @@ public class Stop {
 	@JsonIgnore
 	List<Line> lines;
 	
+	@ElementCollection(targetClass=Long.class)
+	List<Long> linesId;
+	
 	//neighbours from lines the stop belongs to
 	@ElementCollection(targetClass=Long.class)
 	List<Long> neighboursId;
@@ -254,6 +257,14 @@ public class Stop {
 		this.neighboursId = neighboursId;
 	}
 
+
+	public List<Long> getLinesId() {
+		return linesId;
+	}
+
+	public void setLinesId(List<Long> linesId) {
+		this.linesId = linesId;
+	}
 
 	@Override
 	public int hashCode() {
