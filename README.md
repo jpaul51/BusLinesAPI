@@ -4,7 +4,7 @@
 ## Requirements
 JDK 1.8
 
-Maven: [Install maven] (https://maven.apache.org/install.html)
+Maven: [Install maven](https://maven.apache.org/install.html)
 
 A Postgis database:[Postgis website](http://postgis.net/install/) 
 
