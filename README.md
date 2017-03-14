@@ -10,7 +10,7 @@ A Postgis database:[Postgis website](http://postgis.net/install/)
 
 You can use `apt-get install postgis`
 
-Don't forget use `CREATE EXTENSION postgis;` on you database.
+Don't forget use `CREATE EXTENSION postgis;` on your database.
 
 ## Installation
 Clone the [repository](https://github.com/jpaul51/SpringBootStarterProject.git)
