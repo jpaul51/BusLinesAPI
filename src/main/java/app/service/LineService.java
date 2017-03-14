@@ -105,11 +105,11 @@ private StopRepository stopRepository;
 			  	
 			  ArrayList<LineString> lineStrings = new ArrayList();
 		        while ( (f = (SimpleFeature) parser.parse() )!= null) {
-		           //f = (SimpleFeature )parser.parse();
+		          
 		        	
 		           LineString ls = (LineString)f.getDefaultGeometry();
 		           lineStrings.add(ls);
-		        	//System.out.println("GEO: "+(LineString)f.getDefaultGeometry());
+		        	
 		        }
 
 		        
@@ -127,20 +127,23 @@ private StopRepository stopRepository;
 		        
 		         multiLine = (MultiLineString)geometryCollection.union();
 		        }
-		      //  System.out.println(multiLine.toString());
+		      
 		 lines.get(countLine).setLines(multiLine);
 		  countLine++;
 		 }
 		 }catch(Exception e){
-			 System.out.println("ERROR: "+e.getMessage());
+			
 			 e.printStackTrace();
 		};
 		
-		//System.out.println("TEST: "+lines.get(0).getLines().toString());
+		
 		return lines;
 	}
 	
-	
+	/**
+	 * 
+	 * @return all lines from database
+	 */
 	public List<Line> getAllLines(){
 		return (List<Line>) lineRepository.findAll();
 	}

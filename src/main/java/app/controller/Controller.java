@@ -79,11 +79,8 @@ public class Controller {
 	 */
 	@RequestMapping(value="/init",method = RequestMethod.GET)
 	@ResponseBody
-	public String init(){
-		
-		System.out.println("TEST");
+	public String init(){			
 		lineService.init();
-		System.out.println("TEST2");
 		stopService.init();
 		return "oui";
 	}
@@ -102,7 +99,7 @@ public class Controller {
 		
 	
 			ip = in.readLine();
-			System.out.println(ip);
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -154,19 +151,7 @@ public class Controller {
 	  }
 	
 	
-	@RequestMapping(value="/getRoad",method = RequestMethod.GET)
-	@ResponseBody
-	public HashMap<String,Object>getRoad(@RequestParam("start")String startStop,@RequestParam("destination") String destinationStop)
-	{
-		//System.out.println("GETROADX");
-		int minutes = stopService.howMuchMinutesDoINeedToGetThere(startStop, destinationStop, DateTime.now());
-		HashMap<String,Object> returnData = new HashMap<>();
-		DateTime arrivalTime = DateTime.now().plusMinutes(minutes);
-		
-		returnData.put("arrivalTime", arrivalTime);
-		System.out.println("DURATION: "+minutes);
-		return returnData;
-	}
+	
 	
 	@RequestMapping(value="/getShortestWayBetween",method = RequestMethod.GET)
 	@ResponseBody
@@ -183,9 +168,9 @@ public class Controller {
 		Stop sendStop = stopService.findStopByLabel(endStop);
 		
 		if(sstartStop == null)
-			System.out.println("START NULL");
+			throw new NullPointerException("The start stop is null");
 		if(sendStop==null)
-			System.out.println("END NULL");
+			throw new NullPointerException("The end stop is null");
 		
 		if(sstartStop!=null && sendStop!=null)
 		{
@@ -210,20 +195,13 @@ public class Controller {
 	
 	@RequestMapping(value="/debug",method = RequestMethod.GET)
 	@ResponseBody
-	public void getStopSchedules()
+	public void debug()
 	{
 		//
 		stopService.debug();
 	}
 	
-	@RequestMapping(value="/countStopSchedules",method = RequestMethod.GET)
-	@ResponseBody
-	public int countStopSchedules(@RequestParam("stop")String stop)
-	{
-		//
-		int count = stopService.getStopBylabel(stop).getSchedules().size();
-		return count;
-	}
+	
 	
 	@RequestMapping(value="/getOneStopNeighbour",method = RequestMethod.GET)
 	@ResponseBody
@@ -231,25 +209,11 @@ public class Controller {
 	{
 		//
 		List<Stop> neighbours = stopService.getOneStopNeighbour(stop);
-		System.out.println("SIZE: "+ neighbours.size());
 		return neighbours;
 	}
 	
 	
-	@RequestMapping(value="/test",method = RequestMethod.GET)
-	@ResponseBody
-	public List<Stop> test()
-	{
-		ArrayList<Stop> stopList = new ArrayList<>();
-		for(Stop s : stopService.getAllStops())
-		{
-			if(s.getNeighboursId().size()==0)
-			{
-				stopList.add(s);
-			}
-		}
-		return stopList;
-	}
+	
 	
 	/**
 	 * returns json with all lines and all stops
@@ -271,7 +235,7 @@ public class Controller {
 	@RequestMapping(value="/getcloseststop",method = RequestMethod.GET)
 	@ResponseBody
 	public Stop getClosestStop(@RequestParam("latitude")double latitude,@RequestParam("longitude") double longitude){
-		System.out.println("PARAMETERS: "+ latitude + " : " + longitude);
+	
 		GeometryFactory factory = new GeometryFactory();
 		
 		return stopService.getClosestStop(factory.createPoint(new Coordinate(latitude,longitude)));

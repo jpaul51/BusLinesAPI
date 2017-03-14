@@ -35,7 +35,10 @@ public class DemoApplication   extends WebSecurityConfigurerAdapter {
 	
 	
 
-
+/*
+ *  getlinesandstops and getshortestwaybetween can be accessed without authentification
+ * @see org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter#configure(org.springframework.security.config.annotation.web.builders.HttpSecurity)
+ */
 	 @Override
 	  protected void configure(HttpSecurity http) throws Exception {
 	    http

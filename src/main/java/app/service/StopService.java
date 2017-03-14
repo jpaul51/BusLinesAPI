@@ -49,12 +49,13 @@ public class StopService {
 	@Autowired private StopRepository stopRepository;
 	@Autowired private LineRepository lineRepository;
 	@Autowired private ScheduleRepository scheduleRepository;
+	
+	//Resources that we use to build the database
 	final String FILEPATH = "src/main/resources/stopList.json";
 	final String DEPFILEPATH ="src/main/resources/stopgroups.json";
 	final String CSVFILEPATH="src/main/resources/";
 
-	final char firstDirection='I';
-	final char secondDirection='O';
+	
 
 	ArrayList<Stop> stops;
 	/**
@@ -63,26 +64,11 @@ public class StopService {
 	public void init(){
 		try {
 			Iterable<Stop> stops = getStopsFromJson();
-			//stops =generatesClosestNeighboors((List<Stop>)stops);
+			
 			stops = generatesSchedules((List<Stop>) stops); 
-			//System.out.println(stops.iterator().next().getNeighbours().get(0).getNeighbour().getLabel());
-			System.out.println("END SCHEDULES");
+		
+			
 			this.stops=(ArrayList<Stop>) stops;
-			for(Stop stop :stops)
-			{
-
-				//System.out.println(stop.getId() +" : "+stop.getNeighboursId().isEmpty() );
-
-				//System.out.println(stop.getLabel()+" : "+ stop.getId() +"firstNeighbour: "+ stop.getNeighboursId().get(0));
-				if(stop.getLines().contains(new Line(2)))
-				{
-					System.out.println(stop.getLabel()+": "+stop.getSchedules());
-					System.out.println(stop.getSchedules().size() + " --- "+stop.getSchedules().get(0).getSchedules().size());
-				}
-			}
-
-
-
 
 			stopRepository.deleteAll();
 			stopRepository.save(stops);
@@ -91,8 +77,8 @@ public class StopService {
 			e.printStackTrace();
 		}
 	}
-	HashMap<Integer,ArrayList<Stop>> stopRoads ;
-	int currentRoad=0;
+	
+	
 
 	public List<Stop> getOneStopNeighbour(String stopLabel)
 	{
@@ -107,43 +93,7 @@ public class StopService {
 		return neighbours;
 	}
 	
-	public int minutesINeedToGoThereSameLine(String startStopLabel, String destinationStopLabel)
-	{
-		Stop startStop = stopRepository.findByLabelToLower(startStopLabel);
-		Stop destinationStop = stopRepository.findByLabel(destinationStopLabel);
-		
-		
-		Line lineWeUse=null;
-		
-		//if stops are  on the same line
-		if(!Collections.disjoint(startStop.getLines(), destinationStop.getLines()))
-		{
-			
-			for(Line line : startStop.getLines())
-			{
-				if(destinationStop.getLines().contains(line))
-				{
-					lineWeUse = line;
-				}
-			}
-			
-			HashMap<String,Stop> stopsOnRaodByWay = new HashMap<>();
-			
-			for(long neighbourId : startStop.getNeighboursId())
-			{
-				Stop oneNeighbour = stopRepository.findOne(neighbourId);
-				if(oneNeighbour.getLines().contains(lineWeUse))
-				{
-					//TODO: parcours sur une ligne
-				}
-			}
-			
-			
-		}
-		
-		
-		return -1;
-	}
+
 	
 	public Stop findStopByLabel(String label)
 	{
@@ -151,6 +101,13 @@ public class StopService {
 	}
 	
 	
+	/**
+	 * Shortest way between stops using Dijkstra
+	 * @param startStop 
+	 * @param endStop
+	 * @param now can be any dateTime, initialized to current datetime if null
+	 * @return LinesAndStops object that contains all the data we need to display the shortest way between two stops
+	 */
 	public LinesAndStops getShortestWayBetween(Stop startStop, Stop endStop, DateTime now)
 	{
 		
@@ -184,35 +141,28 @@ public class StopService {
 		while(!allStop.isEmpty())
 		{
 			Stop s1 = findClosestNode(allStop,distanceByStop);
-			System.out.println(s1.getLabel());
-			allStop.remove(s1);
-			System.out.println("NEIGHBOURS: "+s1.getNeighboursId().size());
+			allStop.remove(s1);			
 			for(long neighbourId :s1.getNeighboursId())
 			{
 				
 				Stop neighbour = stopRepository.findOne(neighbourId);
-				System.out.println("NEIGHBOUR LABEL: "+neighbour.getLabel());
+			
 				if(allStop.contains(neighbour))
 					updateDistances(s1, neighbour,distanceByStop,predecessor,now);
-				System.out.println(distanceByStop.get(neighbour));
+			
 			}
 		}
 		
-		System.out.println("NEXT");
+		
 		ArrayList<Stop> way = new ArrayList<>();
 		Stop aStop = endStop;
-		System.out.println("END STOP: "+endStop.getLabel());
 		while(!aStop.equals(startStop))
 		{			
-			way.add(new Stop(aStop));
-			
-			aStop = predecessor.get(aStop);
-			System.out.println("PREDECESSOR: "+aStop.getLabel());
-			
+			way.add(new Stop(aStop));	
+			aStop = predecessor.get(aStop);		
 		}
 		
 		way.add(startStop);
-		System.out.println("WAY");
 		ArrayList<Line> linesUsed = new ArrayList<>();
 		for(Stop s : way)
 		{
@@ -223,7 +173,6 @@ public class StopService {
 				linesUsed.add(l);
 			}
 			}
-			System.out.println(s.getLabel());
 		}
 		LinesAndStops las = new LinesAndStops();
 				las.setLines(linesUsed);
@@ -247,7 +196,6 @@ public class StopService {
 		{
 			
 			distanceByStop.put(b,  distanceByStop.get(a) + getDistanceBetweenStops(a, b,now));
-			System.out.println(distanceByStop.get(b));
 			predecessor.put(b, a);
 			
 		}
@@ -265,14 +213,19 @@ public class StopService {
 			if(distanceByStop.get(oneStop) <= min)
 			{
 				min = distanceByStop.get(oneStop);
-				System.out.println(distanceByStop.get(oneStop));
 				resultStop = oneStop;
 			}
 		}
 		return resultStop;
 	}
 	
-	
+	/**
+	 * Calculates distance between two stops.
+	 * @param firstStop
+	 * @param secondStop
+	 * @param timeWeAreOnFirstStop
+	 * @return distance between two stops
+	 */
 	private int getDistanceBetweenStops(Stop firstStop, Stop secondStop, DateTime timeWeAreOnFirstStop)
 	{
 		if(!firstStop.getNeighboursId().contains(secondStop.getId()))
@@ -291,7 +244,7 @@ public class StopService {
 				
 				for(DateTime oneLineScheduleTime : oneLineSchedule.getSchedules())
 				{
-					//System.out.println(oneLineScheduleTime +" : "+ timeWeAreOnFirstStop);
+					
 					
 					if(oneLineScheduleTime.getHourOfDay() >= timeWeAreOnFirstStop.getHourOfDay()  )
 					{
@@ -300,7 +253,7 @@ public class StopService {
 							if(oneLineScheduleTime.isBefore(earliestTime))
 							{
 								earliestTime = oneLineScheduleTime;
-								//System.out.println("EARLIEST TIME: "+earliestTime);
+							
 								earliestTimeLine  = oneLineSchedule.getLine();
 								break;		
 							}
@@ -339,198 +292,6 @@ public class StopService {
 		
 	}
 	
-	
-	//Method that finds all available roads to one destination stop
-	private void checkNeighbours(Stop currentStop, Stop destinationStop,ArrayList<Stop> roadPrefix )
-	{
-		System.out.println(currentRoad+": "+currentStop.getLabel());
-		ArrayList<Stop> oneRoad=null;
-		if(stopRoads.get(currentRoad)==null)
-		{
-			oneRoad = new ArrayList<>();
-			if(roadPrefix!=null)
-				oneRoad.addAll(roadPrefix);
-		}
-		else
-		{
-			oneRoad = stopRoads.get(currentRoad);
-
-		}
-		oneRoad.add(currentStop);
-		stopRoads.put(currentRoad,oneRoad);
-
-		if(!currentStop.equals(destinationStop))
-		{
-			for(Long oneNeighbourId : currentStop.getNeighboursId())
-			{
-			
-				Stop oneNeighbour = stopRepository.findOne(oneNeighbourId);
-				ArrayList<Stop> roadPrefix2 = new ArrayList<>();
-				if(roadPrefix!=null)
-					roadPrefix2.addAll(roadPrefix);
-				roadPrefix2.add(currentStop);
-				
-				boolean shouldRecurse = true;
-				if(stopRoads.get(currentRoad) != null)
-					if(stopRoads.get(currentRoad).contains(oneNeighbour))
-						shouldRecurse=false;
-				
-				if(shouldRecurse)
-					checkNeighbours( oneNeighbour,  destinationStop, roadPrefix2 );
-
-				currentRoad +=1;
-
-			}
-		}
-
-	}
-
-
-
-	public int howMuchMinutesDoINeedToGetThere(String startStopLabel, String destinationStopLabel,DateTime now)
-	{
-		System.out.println("FIND STOPS");;
-		Stop startStop =stopRepository.findByLabelToLower(startStopLabel);
-		Stop destinationStop = stopRepository.findByLabel(destinationStopLabel);
-
-
-
-
-
-		System.out.println("CHECKNEIGHBOURS");	
-		stopRoads = new HashMap<>();
-		checkNeighbours(startStop, destinationStop,null);
-
-
-
-		Iterator<ArrayList<Stop>> roadIterator = stopRoads.values().iterator();
-		int i=0;
-		while(roadIterator.hasNext())
-		{
-			ArrayList<Stop> oneRoad= roadIterator.next();
-			System.out.println("ROAD "+i);
-			for(Stop stop : oneRoad)
-			{
-				System.out.println(stop.getLabel());
-			}
-			System.out.println("");
-			i++;
-
-		}
-
-		ArrayList<Integer> eachRoadDuration = new ArrayList<>();
-		for(ArrayList<Stop> oneRoad : stopRoads.values())
-		{
-			//Some roads end without reaching the destination
-			if(oneRoad.contains(destinationStop))
-			{
-
-				ArrayList<Integer> eachDuration = new ArrayList<>();
-				Stop firstStop = oneRoad.get(0);
-				HashMap<Long,Integer> earliestScheduleIndexForEachLine = new HashMap<>();
-				for(Schedule oneSchedule : firstStop.getSchedules())
-				{
-					if(oneSchedule.getSchoolPeriod())
-					{
-						int earliestIndex = getEarliestTimeIndex(oneSchedule, now, now);
-						earliestScheduleIndexForEachLine.put(oneSchedule.getLine().getId(), earliestIndex);
-						//if the destination stop is on the line of the start stop it's easy
-						int durationInSeconds=0;
-						int previousTimeInSecond=0;
-						//System.out.println(oneSchedule.getSchedules().size());
-						//System.out.println("EARLIEST INDEX: "+earliestIndex);
-						if(earliestIndex !=-1)
-						{
-							if(destinationStop.getLines().contains(oneSchedule.getLine()))
-							{
-								for(Stop eachStopOnRoad : oneRoad)
-								{
-									System.out.println("Stop Schedule: "+eachStopOnRoad.getLabel());
-									for(Schedule eachSchedule : eachStopOnRoad.getSchedules())
-									{
-										if(eachSchedule.getLine().equals(oneSchedule.getLine()) && eachSchedule.getSchoolPeriod())
-										{
-											//System.out.println(eachSchedule.getSchedules().size());
-											DateTime earliestTime = eachSchedule.getSchedules().get(earliestIndex);
-											System.out.println("EARLIEST DATE: "+earliestTime+": " + earliestTime.getMinuteOfDay());
-											if(previousTimeInSecond==0)
-												previousTimeInSecond = earliestTime.getMinuteOfDay();
-											else
-											{
-												durationInSeconds = previousTimeInSecond - earliestTime.getMinuteOfDay();
-											}
-											//System.out.println(tripDuration.getMillis());
-										}
-									}
-								}
-								System.out.println("ADD DURATION");
-								eachDuration.add(durationInSeconds);
-							}
-						}
-					}
-				}
-
-				int shortesDuration = getShortestTime(eachDuration);
-				eachRoadDuration.add(shortesDuration);
-			}
-
-
-		}
-
-
-		return eachRoadDuration.get(0);
-
-	}
-
-
-	private int getShortestTime(ArrayList<Integer> durations)
-	{
-		int shortestDuration=-1;
-		for(int oneDuration : durations)
-		{
-
-
-
-			if(oneDuration < shortestDuration || shortestDuration == -1)
-			{
-				shortestDuration = oneDuration;
-			}
-		}
-		return shortestDuration;
-
-	}
-
-
-
-
-
-	private int getEarliestTimeIndex(Schedule oneSchedule,DateTime now, DateTime timeWeStartAt)
-	{
-		Iterator<DateTime> timeIterator = oneSchedule.getSchedules().iterator();
-		int earliestDateIndex=-1;
-		int currentIndex=0;
-		boolean found=false;
-
-		while(timeIterator.hasNext() && !found)
-		{
-			DateTime eachTime = timeIterator.next();
-			System.out.println(eachTime +"   :    "+now);
-
-			if(eachTime.getHourOfDay() >= now.getHourOfDay()  )
-			{
-				if( (eachTime.getHourOfDay()==now.getHourOfDay() && eachTime.getMinuteOfHour()>= now.getMinuteOfHour()) || eachTime.getHourOfDay() > now.getHourOfDay() )
-				{
-
-					earliestDateIndex = currentIndex;
-					found=true;
-				}
-			}
-			currentIndex++;
-		}
-
-		return earliestDateIndex;
-	}
-
 
 
 	public Stop getStopBylabel(String label)
@@ -546,7 +307,11 @@ public class StopService {
 	}
 
 
-
+	/**
+	 * Read schedules from files and updates the stops
+	 * @param stopList
+	 * @return Stop list with schedules
+	 */
 	private Iterable<Stop> generatesSchedules(List<Stop> stopList)
 	{
 
@@ -554,10 +319,10 @@ public class StopService {
 		final String CSV_SECOND_NULL_VALUE = "|";
 		ArrayList<Stop> stopsWithSchedules = new ArrayList<>();
 
-		//System.out.println(CSVFILEPATH+"L1-D1-PS.csv");
+	
 		ArrayList<String> periodList = new ArrayList<>();
 		periodList.add("PS");
-		//periodList.add("VS");
+	
 
 		for(Stop eachStop : stopList)
 
@@ -574,7 +339,7 @@ public class StopService {
 						{
 							File file = new File(CSVFILEPATH+"L"+eachStopLine.getId()+"-D"+wayFile+"-"+period+".csv");
 							try (FileReader reader = new FileReader(file)) {
-								//System.out.println("File found");
+							
 								CsvReader schedules = new CsvReader(reader,';');
 
 								schedules.readHeaders();
@@ -585,9 +350,7 @@ public class StopService {
 								ArrayList<String> constraintList = new ArrayList<>();
 								while(schedules.readRecord())
 								{
-									//System.out.println(schedules.get(0).toString().trim()+": "+schedules.get(0).compareTo("norelan"));
-									//System.out.println(schedules.get(0).toString().trim().toLowerCase()+" == norelan");
-									System.out.println(schedules.get(0).toString().trim().toLowerCase().replaceAll(" ", "") +" == "+(eachStop.getLabel().toString().trim().toLowerCase().replaceAll(" ","")));
+									
 									if(schedules.get(0).toString().trim().toLowerCase().replaceAll(" ", "").contentEquals(eachStop.getLabel().toString().trim().toLowerCase().replaceAll(" ","")))
 									{
 
@@ -602,7 +365,7 @@ public class StopService {
 											}
 											else
 											{
-												//System.out.println(eachStop.getLabel()+": "+ file.getName());
+												
 												try{
 													time = formatter.parseDateTime(schedules.get(i));
 													stopSchedules.add(time);
@@ -613,21 +376,9 @@ public class StopService {
 											}
 
 										}
-										//	
-										//System.out.println(schedules.getColumnCount());
+										
 									}
-									/*
-				            	if(schedules.get(0).toString().trim().toLowerCase().contentEquals("constraints"))
-				            	{
-
-				            		for(int i=1;i<schedules.getColumnCount();i++)
-				            		{
-				            			if(schedules.get(i).toString().length()>0)
-				            				constraintList.add(schedules.get(i));
-				            			else
-				            				constraintList.add("null");
-				            		}
-				            	}*/
+							
 									way = schedules.get(0).toString(); //keeps the last one
 
 								}
@@ -641,8 +392,7 @@ public class StopService {
 								stopSchedulesObjectlist.add(oneSchedule);
 
 
-								// System.out.println("Column Count: "+schedules.getColumnCount());
-								// System.out.println(schedules.get(0));
+								
 							} catch (FileNotFoundException e) {
 								// TODO Auto-generated catch block
 
@@ -663,59 +413,7 @@ public class StopService {
 
 
 		}
-		/*final int SCHEDULE_NUMBER=53;
-		String way=null;
-		DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
-		int count=0;
-		ArrayList<Stop> stopsWithSchedules = new ArrayList<>();
-		for(Stop eachStop : stopList)
-		{
-			ArrayList<Schedule> stopSchedules = new ArrayList<>();
-			for(int i=0; i<eachStop.getLines().size();i++)
-			{
-				way=null;
-				try{
-				  File file = new File(CSVFILEPATH+"L"+i+"-D1-PS.csv");//Add loop here to manage line direction
-			        try (FileReader reader = new FileReader(file)) {
-			        	System.out.println("File found");
-			            CsvReader schedules = new CsvReader(reader,';');
-			            schedules.readHeaders();
-			            Schedule schedule = new Schedule();
-			            ArrayList<DateTime> scheduleList = new ArrayList<>();
-
-			            while (schedules.readRecord()) {
-			            	if ( schedules.get("way") != null )
-			            		if(way==null)
-			            			way =  schedules.get("way");
-			            	System.out.println(schedules.get("ARRETS")+" == " + eachStop.getLabel());
-			            	if(schedules.get("Arrets") == eachStop.getLabel())
-			            	{						           							            
-				            	for(int scheduleIndex=1; scheduleIndex < SCHEDULE_NUMBER;scheduleIndex++){
-
-				            		scheduleList.add(formatter.parseDateTime(schedules.get("B"+scheduleIndex)));
-				            	}
-			            	}
-
-			            }
-			            schedule.setSchedules(scheduleList);
-			            schedule.setSchoolPeriod(true);// TODO: detect schoolPeriod
-			            schedule.setLine(eachStop.getLines().get(i));
-			            schedule.setway(stopRepository.findByLabel(way));
-			            stopSchedules.add(schedule);
-			        }
-				}catch(FileNotFoundException e){
-					System.out.println("File not found");
-
-				}catch(IOException e){}
-
-		}
-			count++;
-			eachStop.setSchedules(stopSchedules);
-			stopsWithSchedules.add(eachStop);
-		}
-		System.out.println("COUNT: "+stopsWithSchedules.size());
-
-		 */
+	
 		return stopsWithSchedules;
 	}
 
@@ -823,7 +521,7 @@ public class StopService {
 
 
 			}
-			System.out.println("Stops with lines done");
+		
 
 			for(Stop oneStop : stopsById.values())
 			{
@@ -875,7 +573,7 @@ public class StopService {
 
 		}
 		
-		//System.out.println(stops.isEmpty());
+		
 		List<Stop> returnList = new ArrayList<Stop>(stopsById.values());
 		
 		return returnList;
@@ -888,142 +586,11 @@ public class StopService {
 		return (List<Stop>) stopRepository.findAll();
 	}
 
+	
+	
 	/**
-	 * Finds out for each stop it's neighboors on the busline graph
-	 * 
-	 * @param stopList : all the stops
-	 * @return updated stop list in which all stops have closest neighboors
+	 * Command line method to check if everything is correctly loaded
 	 */
-	private List<Stop> generatesClosestNeighboors(List<Stop> stopList)
-	{
-
-		/*
-		 * First we create a busline - stop index
-		 */
-		/*
-		List<Line> lineList = (List<Line>) lineRepository.findAll();
-		HashMap<Line,List<Stop>> stopByLine = new HashMap<>();
-
-
-		for(Stop stop : stopList)
-		{
-			List<Line> linesByStop = stop.getLines();
-			for(Line line : linesByStop)
-			{
-
-				if (stopByLine.containsKey(line))
-				{
-					List<Stop> keyListStop = stopByLine.get(line);
-					keyListStop.add(stop);
-					stopByLine.put(line, keyListStop);
-				}
-				else
-				{
-					List<Stop> keyListStop = new ArrayList<Stop>();
-					keyListStop.add(stop);
-					stopByLine.put(line, keyListStop);
-
-				}
-			}
-		}
-		 */
-		/*
-		for(Line l : stopByLine.keySet()){
-			System.out.println("LINE: "+ l.getName());
-			for(Stop s : stopByLine.get(l))
-			{
-				System.out.println(s.getLabel());
-			}
-		}*/
-		/*
-		ArrayList<Stop> stopsWithNeighBours = new ArrayList<>();
-
-		//Now we look over each stop to find it's closest neighbours
-		for( Stop stop : stopList )
-		{
-
-			List<StopNeighbour> stopNeighBours=new ArrayList<>();
-			//We need the 2 closest neighbours for each busline
-			for(Line line : stop.getLines())
-			{
-
-
-				List<Stop> stopsOnline = stopByLine.get(line);
-
-				LocationIndexedLine locationIndexedLine = new LocationIndexedLine(line.getLines());
-				LinearLocation stopLocation = locationIndexedLine.indexOf(stop.getPoint().getCoordinate());
-
-				System.out.println(stopLocation.toString());
-				stopLocation = locationIndexedLine.project(stop.getPoint().getCoordinate());
-				System.out.println(stopLocation.toString());
-
-				double shortestDist= Double.MAX_VALUE; //distance between our stop and it's closest neighbour on the current line
-				double secondShortestDist = Double.MAX_VALUE; //distance between our stop and it's closest neighbour on the current line going the other way
-				Stop closestStop = null;
-				Stop secondClosestStop = null; //closest stop on the oposite side of the bus line as the closest stop
-				//we go through all stops on current line and find the 2 neighbours
-				for(Stop stopOnLine : stopsOnline)
-				{
-
-					//System.out.println(stopOnLine.getPoint().getCoordinate().toString()+" : "+ stop.getPoint().getCoordinate().toString());
-					double currentDist = getDistanceStop(locationIndexedLine,stop,stopOnLine);
-					//System.out.println("DISTANCE "+stop.getLabel()+" "+stopOnLine.getLabel()+": "+currentDist);
-					if(currentDist != 0)
-					{
-						if(currentDist < shortestDist)
-						{
-							//old closest stop is only worth keeping if it's on the other side of the line compared to the new closest stop
-							if(closestStop != null && shortestDist < getDistanceStop(locationIndexedLine,stopOnLine,closestStop))
-							{
-								secondShortestDist = shortestDist;
-								secondClosestStop = closestStop;
-							}
-							shortestDist = currentDist;
-							closestStop = stopOnLine;
-						}
-						else if(currentDist < secondShortestDist)
-						{
-							secondShortestDist = currentDist;
-							//needs to be on the other side of the line compared to closest stop
-							if(secondClosestStop != null && secondShortestDist < getDistanceStop(locationIndexedLine,secondClosestStop,stopOnLine))
-							{
-								secondShortestDist = currentDist;
-								secondClosestStop = closestStop;
-							}
-						}
-
-
-					}
-				}
-				//Add neighbours to stops
-				if(closestStop != null)
-				{
-					StopNeighbour firstNeighbour = new StopNeighbour(line, shortestDist, closestStop);
-					stopNeighBours.add(firstNeighbour);
-
-
-				}
-				if(secondClosestStop != null)
-				{
-					StopNeighbour secondNeighbour = new StopNeighbour(line, secondShortestDist, secondClosestStop);
-					stopNeighBours.add(secondNeighbour);
-
-				}
-
-
-			}
-			//Add new stops to stopList
-			stop.setNeighbours(stopNeighBours);
-			stopsWithNeighBours.add(stop);
-		}
-		return stopsWithNeighBours;
-		 */
-		return null;
-	}
-
-	
-	
-	
 	public void debug()
 	{
 		ArrayList<Stop> stops = (ArrayList<Stop>) stopRepository.findAll();
@@ -1077,54 +644,14 @@ public class StopService {
 					
 			}
 		
-		 
-//		for(Stop s : stops)
-//		{
-//			System.out.println("----------------------------------------------------");
-//			System.out.println("STOP: "+s.getLabel() );
-//			System.out.println("ID: "+s.getId() );
-//			System.out.println("LINES: ");
-//			for(Line l : s.getLines())
-//				System.out.print(l.getId()+" ");
-//			System.out.println();
-//			System.out.println("NEIGHBOURS");
-//			for(long nId : s.getNeighboursId())
-//			{
-//				Stop n =stopRepository.findOne(nId);
-//				System.out.println("\tID: "+n.getId() +" : " + n.getLabel());
-//			}
-//			System.out.println(s.getSchedules().size()+" SCHEDULES");
-//			for(Schedule sc : s.getSchedules())
-//			{
-//				System.out.println("\tLine: "+sc.getLine().getId()+", way: "+ sc.getway()+", dates: "+ sc.getSchedules().size());
-//			}
-//			
-//			boolean ok = true;
-//			while(ok)
-//			{
-//				String reponse = scanner.nextLine();
-//				switch(reponse){
-//					case "n":
-//					{
-//						ok=false;
-//						break;
-//					}
-//					default:
-//					{
-//						break;
-//					}
-//				}
-//					
-//			}
-//		}
-//		
+	
 		scanner.close();
 	}
 	
 	
 	
 	/**
-	 * 
+	 * This could be used if we don't have the order of the stops
 	 * @param line
 	 * @param s1
 	 * @param s2
@@ -1141,7 +668,7 @@ public class StopService {
 
 		double distance = snap.distance(snap2);
 
-		//System.out.println("LOCATION: "+snap.toString()+" ; "+ snap2.toString());
+		
 		LineString dist = (LineString) line.extractLine(s1Location, s2Location);
 
 

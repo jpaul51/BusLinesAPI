@@ -16,10 +16,15 @@ public interface StopRepository extends CrudRepository<Stop, Long> {
 
 	Stop findByLabel(String label);
 	
+	/*
+	 * Finds a stop by label. We make sure to ignorecase. There are no accent in our database
+	 */
 	@Query(value="SELECT s FROM Stop s WHERE lower(s.label)=lower(:label)")
 	Stop findByLabelToLower(@Param("label")String label);
 	
-	
+	/*
+	 * Finds closest Stop using postgis extension
+	 */
 	@Query(value ="SELECT s FROM Stop s ORDER BY distance(:point,s.point) "
 	 	)
 	List<Stop> findClosestStop(@Param("point") Point point);
