@@ -82,7 +82,7 @@ public class Controller {
 	public String init(){			
 		lineService.init();
 		stopService.init();
-		return "oui";
+		return "done";
 	}
 	
 	@RequestMapping(value="/location", method = RequestMethod.GET)
